@@ -1,90 +1,83 @@
-// --- FANDOM IMAGE FIX -------------------------------------------------------
-// Fandom blocks hotlinking unless URLs include /revision/latest?cb=#
-function fandomFix(url) {
-    if (!url) return null;
+const PROXY = "http://127.0.0.1:5005/img?url=";
+const JSON_FILE = "factions_remote.json";
 
-    // Already fixed?
-    if (url.includes("/revision/")) return url;
-
-    // If it's a nocookie.net image, patch it
-    if (url.includes("nocookie.net")) {
-        return url + "/revision/latest?cb=1";
-    }
-
-    return url;
+function prox(url) {
+    return PROXY + encodeURIComponent(url);
 }
-// ----------------------------------------------------------------------------
 
-
-// Load factions JSON (REMOTE IMAGE URL VERSION)
-fetch("factions_remote.json")
+fetch(JSON_FILE)
     .then(r => r.json())
-    .then(data => {
-        const factionName = "The Arborec"; // test one faction
-        const faction = data[factionName];
+    .then(factions => {
+        const container = document.getElementById("faction-container");
 
-        const results = document.getElementById("results");
-        results.innerHTML = ""; // clear old
+        Object.entries(factions).forEach(([name, data]) => {
+            const factionBox = document.createElement("div");
+            factionBox.className = "faction";
 
+            // HEADER
+            const header = document.createElement("div");
+            header.className = "faction-header";
 
-        if (!faction) {
-            results.innerHTML =
-                `<div style="color:white">Faction "${factionName}" not found in JSON.</div>`;
-            return;
-        }
+            // Symbol next to name
+            let symbol = document.createElement("img");
+            symbol.src = prox(data.symbol);
+            symbol.onerror = () => symbol.style.display = "none";
 
-        // Create display wrapper
-        const box = document.createElement("div");
-        box.style.textAlign = "center";
-        box.style.color = "white";
-        box.style.marginTop = "30px";
+            const title = document.createElement("h2");
+            title.textContent = name;
 
-        box.innerHTML = `<h2>${factionName}</h2>`;
+            header.appendChild(symbol);
+            header.appendChild(title);
 
-        // Desired display order
-        const keys = [
-            "symbol",
-            "home_system",
-            "agent",
-            "commander",
-            "hero",
-            "mech",
-            "faction_tech_1",
-            "faction_tech_2",
-            "breakthrough",
-            "promissory",
-            "flagship_front",
-            "flagship_back"
-        ];
+            // CONTENT (hidden until clicked)
+            const content = document.createElement("div");
+            content.className = "faction-content";
 
-        keys.forEach(key => {
-            let url = faction[key];
+            // Keys → labels
+            const order = [
+                ["home_system", "Home System"],
+                ["agent", "Agent"],
+                ["commander", "Commander"],
+                ["hero", "Hero"],
+                ["mech", "Mech"],
+                ["faction_tech_1", "Faction Tech I"],
+                ["faction_tech_2", "Faction Tech II"],
+                ["breakthrough", "Breakthrough"],
+                ["promissory", "Promissory Note"],
+                ["flagship_front", "Flagship (Front)"],
+                ["flagship_back", "Flagship (Back)"]
+            ];
 
-            if (!url) return;
+            order.forEach(([key, label]) => {
+                if (data[key]) {
+                    const titleEl = document.createElement("div");
+                    titleEl.className = "category-title";
+                    titleEl.textContent = label;
 
-            // Apply hotlink fix
-            url = fandomFix(url);
+                    const grid = document.createElement("div");
+                    grid.className = "image-grid";
 
-            // Create image element
-            const img = document.createElement("img");
-            img.src = url;
-            img.style.width = "300px";
-            img.style.margin = "20px auto";
-            img.style.display = "block";
-            img.style.border = "1px solid white";
+                    const img = document.createElement("img");
+                    img.src = prox(data[key]);
 
-            // Fallback if image fails to load
-            img.onerror = () => {
-                img.style.border = "1px solid red";
-                img.alt = "Image failed to load";
+                    grid.appendChild(img);
+                    content.appendChild(titleEl);
+                    content.appendChild(grid);
+                }
+            });
+
+            // Toggle collapse
+            header.onclick = () => {
+                content.style.display =
+                    content.style.display === "block" ? "none" : "block";
             };
 
-            box.appendChild(img);
+            factionBox.appendChild(header);
+            factionBox.appendChild(content);
+            container.appendChild(factionBox);
         });
-
-        results.appendChild(box);
     })
     .catch(err => {
-        document.getElementById("results").innerHTML =
-            `<div style='color:white'>Error loading JSON: ${err}</div>`;
+        document.body.innerHTML +=
+            `<div style="color:red">Failed to load JSON: ${err}</div>`;
     });
