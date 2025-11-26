@@ -6,8 +6,9 @@ html, body {
     background: #1b0ab4; /* navy */
     font-family: Arial, sans-serif;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding-top: 40px;
 }
 
 .center {
