@@ -1,57 +1,94 @@
+/* ===== GLOBAL BACKGROUND ===== */
 body {
     margin: 0;
     padding: 20px;
     font-family: Arial, sans-serif;
-    background: url("blue-space.jpg") center/cover no-repeat fixed;
     color: white;
+    background-image: url("blue-space.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
+/* ===== TITLE ===== */
 h1 {
-    margin-bottom: 20px;
+    margin-left: 10px;
+    font-size: 36px;
+    text-shadow: 0 0 8px black;
 }
 
+/* ===== FACTION BLOCK ===== */
 .faction {
-    background: rgba(0, 0, 0, 0.65);
-    border-radius: 6px;
-    margin-bottom: 20px;
-    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 35px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.7);
 }
 
+/* ===== FACTION HEADER ===== */
 .faction-header {
     display: flex;
     align-items: center;
+    gap: 15px;
     cursor: pointer;
+    padding-bottom: 10px;
 }
 
-.faction-header img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    margin-right: 12px;
+.faction-header:hover {
+    filter: brightness(1.2);
 }
 
 .faction-header h2 {
+    font-size: 26px;
     margin: 0;
+    text-shadow: 0 0 6px black;
 }
 
+/* ===== FACTION SYMBOL NEXT TO NAME ===== */
+.faction-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px black);
+}
+
+/* ===== COLLAPSIBLE CONTENT ===== */
 .faction-content {
-    display: none; /* collapsed default */
+    display: none;
     margin-top: 15px;
 }
 
-.category-title {
-    margin: 10px 0 5px;
-    font-weight: bold;
-}
-
-.image-grid {
+/* ===== GRID OF ALL IMAGES ===== */
+.big-image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    grid-gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
 }
 
-.image-grid img {
+/* ===== INDIVIDUAL IMAGE BOX ===== */
+.image-box {
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 6px rgba(0,0,0,0.9);
+}
+
+.image-box img {
     width: 100%;
-    border-radius: 4px;
-    border: 2px solid white;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 6px;
+    box-shadow: 0 0 10px black;
+}
+
+/* ===== CAPTIONS ===== */
+.caption {
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 6px black;
 }

@@ -11,6 +11,8 @@ fetch(JSON_FILE)
         const container = document.getElementById("faction-container");
 
         Object.entries(factions).forEach(([name, data]) => {
+
+            // OUTER BOX
             const factionBox = document.createElement("div");
             factionBox.className = "faction";
 
@@ -18,55 +20,62 @@ fetch(JSON_FILE)
             const header = document.createElement("div");
             header.className = "faction-header";
 
-            // Symbol next to name
-            let symbol = document.createElement("img");
-            symbol.src = prox(data.symbol);
-            symbol.onerror = () => symbol.style.display = "none";
+            const icon = document.createElement("img");
+            icon.src = prox(data.symbol);
+            icon.className = "faction-icon";
 
             const title = document.createElement("h2");
             title.textContent = name;
 
-            header.appendChild(symbol);
+            header.appendChild(icon);
             header.appendChild(title);
 
-            // CONTENT (hidden until clicked)
+            // CONTENT (starts collapsed)
             const content = document.createElement("div");
             content.className = "faction-content";
 
-            // Keys → labels
-            const order = [
-                ["home_system", "Home System"],
-                ["agent", "Agent"],
-                ["commander", "Commander"],
-                ["hero", "Hero"],
-                ["mech", "Mech"],
-                ["faction_tech_1", "Faction Tech I"],
-                ["faction_tech_2", "Faction Tech II"],
-                ["breakthrough", "Breakthrough"],
-                ["promissory", "Promissory Note"],
-                ["flagship_front", "Flagship (Front)"],
-                ["flagship_back", "Flagship (Back)"]
-            ];
+            // GRID container (ALL IMAGES GO HERE)
+            const grid = document.createElement("div");
+            grid.className = "big-image-grid";
 
-            order.forEach(([key, label]) => {
-                if (data[key]) {
-                    const titleEl = document.createElement("div");
-                    titleEl.className = "category-title";
-                    titleEl.textContent = label;
+            // MAP JSON KEYS TO LABELS
+            const mapping = {
+                "home_system": "Home System",
+                "agent": "Agent",
+                "commander": "Commander",
+                "hero": "Hero",
+                "mech": "Mech",
+                "faction_tech_1": "Faction Tech I",
+                "faction_tech_2": "Faction Tech II",
+                "breakthrough": "Breakthrough",
+                "promissory": "Promissory",
+                "flagship_front": "Flagship (Front)",
+                "flagship_back": "Flagship (Back)"
+            };
 
-                    const grid = document.createElement("div");
-                    grid.className = "image-grid";
+            Object.entries(mapping).forEach(([key, label]) => {
+                if (!data[key]) return;
 
-                    const img = document.createElement("img");
-                    img.src = prox(data[key]);
+                // IMAGE WRAPPER
+                const box = document.createElement("div");
+                box.className = "image-box";
 
-                    grid.appendChild(img);
-                    content.appendChild(titleEl);
-                    content.appendChild(grid);
-                }
+                const img = document.createElement("img");
+                img.src = prox(data[key]);
+
+                const caption = document.createElement("div");
+                caption.className = "caption";
+                caption.textContent = label;
+
+                box.appendChild(img);
+                box.appendChild(caption);
+
+                grid.appendChild(box);
             });
 
-            // Toggle collapse
+            content.appendChild(grid);
+
+            // CLICK TO EXPAND/COLLAPSE
             header.onclick = () => {
                 content.style.display =
                     content.style.display === "block" ? "none" : "block";
@@ -76,8 +85,4 @@ fetch(JSON_FILE)
             factionBox.appendChild(content);
             container.appendChild(factionBox);
         });
-    })
-    .catch(err => {
-        document.body.innerHTML +=
-            `<div style="color:red">Failed to load JSON: ${err}</div>`;
     });
