@@ -13,3 +13,11 @@ html, body {
     justify-content: center;
     padding-top: 40px;
 }
+
+.center {
+    color: white;
+    font-size: 48px;
+    text-align: center;
+}
+
+
