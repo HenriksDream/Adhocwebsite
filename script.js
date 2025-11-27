@@ -228,6 +228,16 @@ function restoreDraft(draft) {
     if (!draft || !draft.players) return;
 
     Object.entries(draft.players).forEach(([name, player]) => {
-        if (player) assignFactionToPlayer(name, player);
+        if (!player) return;
+
+        const box = document.querySelector(`.faction[data-name="${name}"]`);
+        if (!box) return;
+
+        // restore internal data
+        box.dataset.player = player;
+
+        // restore visible title
+        const h2 = box.querySelector("h2");
+        h2.textContent = `${name} — ${player}`;
     });
 }
