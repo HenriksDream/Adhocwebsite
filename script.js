@@ -21,18 +21,21 @@ async function saveDraft(data) {
 let allFactions = {};
 const players = ["Tjuven i bagdad", "NöffNöff", "Gissa Mitt Jobb", "Piss I Handfatet"];
 
+// Load factions first
 fetch("factions.json")
     .then(res => res.json())
     .then(async data => {
+
         allFactions = data;
 
-        // render boxes first
+        // 1. Render faction boxes
         renderAllFactions(data);
 
-        // load saved state
+        // 2. Load saved draft (AFTER render)
         const saved = await loadDraft();
+        restoreDraft(saved);
 
-        // create filter dropdown after restore
+        // 3. Filter dropdown created last
         setupFilterDropdown();
     });
 
@@ -50,6 +53,7 @@ function renderAllFactions(factions) {
         box.dataset.name = name;
         box.dataset.player = "";
 
+        // header
         const header = document.createElement("div");
         header.className = "faction-header";
 
@@ -64,6 +68,7 @@ function renderAllFactions(factions) {
         header.appendChild(icon);
         header.appendChild(title);
 
+        // collapsible content
         const content = document.createElement("div");
         content.className = "faction-content";
 
@@ -74,8 +79,8 @@ function renderAllFactions(factions) {
             if (!url.includes(".jpg")) return;
             if (key.includes("symbol")) return;
 
-            const boxImg = document.createElement("div");
-            boxImg.className = "image-box";
+            const ibox = document.createElement("div");
+            ibox.className = "image-box";
 
             const img = document.createElement("img");
             img.src = url;
@@ -84,12 +89,13 @@ function renderAllFactions(factions) {
             label.className = "caption";
             label.textContent = key.replaceAll("_", " ");
 
-            boxImg.appendChild(img);
-            boxImg.appendChild(label);
-            grid.appendChild(boxImg);
+            ibox.appendChild(img);
+            ibox.appendChild(label);
+            grid.appendChild(ibox);
         });
 
         content.appendChild(grid);
+
         header.onclick = () => {
             content.style.display =
                 content.style.display === "block" ? "none" : "block";
@@ -103,7 +109,7 @@ function renderAllFactions(factions) {
 
 
 // =======================
-// HELPER FUNCTIONS
+// SHUFFLE
 // =======================
 function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -112,13 +118,59 @@ function shuffle(arr) {
     }
 }
 
-function assignFactionToPlayer(name, player) {
-    const box = document.querySelector(`.faction[data-name="${name}"]`);
-    if (!box) return;
 
-    const h2 = box.querySelector("h2");
-    h2.textContent = `${name} — ${player}`;
-    box.dataset.player = player;
+// =======================
+// DRAFT LOGIC
+// =======================
+document.getElementById("draft-button").addEventListener("click", () => {
+    const pass = prompt("Enter draft password:");
+    if (pass !== "hejkasper1337") return;
+    runDraft();
+});
+
+async function runDraft() {
+    const names = Object.keys(allFactions).slice();
+    shuffle(names);
+
+    const picks = players.length * 3;
+    const selected = names.slice(0, picks);
+
+    clearPlayerAssignments();
+
+    let i = 0;
+    selected.forEach(faction => {
+        const p = players[i % players.length];
+        assignFactionToPlayer(faction, p);
+        i++;
+    });
+
+    setupFilterDropdown();
+
+    // Save everything
+    const draft = {
+        players: {},
+        order: selected
+    };
+
+    document.querySelectorAll(".faction").forEach(box => {
+        draft.players[box.dataset.name] = box.dataset.player;
+    });
+
+    await saveDraft(draft);
+}
+
+
+// =======================
+// ASSIGN + CLEAR
+// =======================
+function assignFactionToPlayer(name, player) {
+    document.querySelectorAll(".faction").forEach(box => {
+        if (box.dataset.name === name) {
+            const h2 = box.querySelector("h2");
+            h2.textContent = `${name} — ${player}`;
+            box.dataset.player = player;
+        }
+    });
 }
 
 function clearPlayerAssignments() {
@@ -131,60 +183,21 @@ function clearPlayerAssignments() {
 
 
 // =======================
-// DRAFT LOGIC
-// =======================
-document.getElementById("draft-button").addEventListener("click", async () => {
-    const pass = prompt("Enter draft password:");
-    if (pass !== "hejkasper1337") return;
-
-    const factionNames = Object.keys(allFactions).slice();
-    shuffle(factionNames);
-
-    const picksNeeded = players.length * 3;
-    const selected = factionNames.slice(0, picksNeeded);
-
-    clearPlayerAssignments();
-
-    let i = 0;
-    selected.forEach(faction => {
-        const p = players[i % players.length];
-        assignFactionToPlayer(faction, p);
-        i++;
-    });
-
-    // save complete draft to backend
-    const data = {
-        players: {},
-        order: selected
-    };
-
-    document.querySelectorAll(".faction").forEach(box => {
-        data.players[box.dataset.name] = box.dataset.player;
-    });
-
-    await saveDraft(data);
-
-    setupFilterDropdown();
-});
-
-
-// =======================
-// RESET DRAFT
+// RESET BUTTON
 // =======================
 document.getElementById("reset-button").addEventListener("click", async () => {
     const pass = prompt("Enter reset password:");
     if (pass !== "hejkasper1337") return;
 
     clearPlayerAssignments();
+    document.getElementById("player-filter").style.display = "none";
 
     await fetch("https://vps.henriksadhoc.se/api/reset", { method: "POST" });
-
-    document.getElementById("player-filter").style.display = "none";
 });
 
 
 // =======================
-// FILTER
+// FILTER DROPDOWN
 // =======================
 function setupFilterDropdown() {
     const filter = document.getElementById("player-filter");
@@ -209,7 +222,7 @@ function applyPlayerFilter(player) {
 
 
 // =======================
-// RESTORE DRAFT
+// RESTORE SAVED DRAFT
 // =======================
 function restoreDraft(draft) {
     if (!draft || !draft.players) return;
