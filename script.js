@@ -1,11 +1,11 @@
 // =====================================================
-//  LOAD ALL FACTIONS (but don't display anything yet)
+//  LOAD FACTIONS
 // =====================================================
 
 let allFactions = {};
 
 function prox(p) {
-    return p; // keep as-is (your proxy handler)
+    return p;
 }
 
 fetch("factions.json")
@@ -15,32 +15,15 @@ fetch("factions.json")
 
 
 // =====================================================
-//  RENDER A SINGLE FACTION'S IMAGES
+//  RENDER A SINGLE FACTION DETAILS (images grid)
 // =====================================================
+
 function renderFactionDetails(name) {
     const data = allFactions[name];
     if (!data) return null;
 
     const wrapper = document.createElement("div");
-    wrapper.className = "faction";
-
-    const header = document.createElement("div");
-    header.className = "faction-header";
-
-    const icon = document.createElement("img");
-    icon.src = prox(data.symbol);
-    icon.className = "faction-icon";
-
-    const title = document.createElement("h2");
-    title.textContent = name;
-
-    header.appendChild(icon);
-    header.appendChild(title);
-    wrapper.appendChild(header);
-
-    const content = document.createElement("div");
-    content.className = "faction-content";
-    content.style.display = "block";
+    wrapper.className = "draft-details"; // FIX: not .faction
 
     const grid = document.createElement("div");
     grid.className = "big-image-grid";
@@ -70,25 +53,22 @@ function renderFactionDetails(name) {
         const img = document.createElement("img");
         img.src = prox(data[key]);
 
-        const caption = document.createElement("div");
-        caption.className = "caption";
-        caption.textContent = label;
+        const cap = document.createElement("div");
+        cap.className = "caption";
+        cap.textContent = label;
 
         box.appendChild(img);
-        box.appendChild(caption);
-
+        box.appendChild(cap);
         grid.appendChild(box);
     });
 
-    content.appendChild(grid);
-    wrapper.appendChild(content);
-
+    wrapper.appendChild(grid);
     return wrapper;
 }
 
 
 // =====================================================
-//  DRAFT SYSTEM
+//  DRAFTING SYSTEM
 // =====================================================
 
 function pickRandomFactions(n) {
@@ -100,34 +80,44 @@ function pickRandomFactions(n) {
 }
 
 function renderDraftResult(list) {
-    const box = document.getElementById("draft-results");
-    box.innerHTML = "";
+    const results = document.getElementById("draft-results");
+    results.innerHTML = "";
 
     list.forEach(name => {
         const entry = document.createElement("div");
-        entry.className = "faction";
+        entry.className = "faction";  // header-style only
         entry.style.cursor = "pointer";
 
-        entry.innerHTML = `
-            <div class="faction-header">
-                <img class="faction-icon" src="${prox(allFactions[name].symbol)}">
-                <h2>${name}</h2>
-            </div>
-        `;
+        // CLICKABLE HEADER
+        const header = document.createElement("div");
+        header.className = "faction-header";
 
-        // On click → show full details BELOW this entry
-        entry.addEventListener("click", () => {
-            // Remove old open sections
-            const old = entry.querySelector(".draft-expanded");
-            if (old) old.remove();
+        const icon = document.createElement("img");
+        icon.className = "faction-icon";
+        icon.src = prox(allFactions[name].symbol);
 
-            // Add new viewer
-            const details = renderFactionDetails(name);
-            details.classList.add("draft-expanded");
-            entry.appendChild(details);
+        const title = document.createElement("h2");
+        title.textContent = name;
+
+        header.appendChild(icon);
+        header.appendChild(title);
+        entry.appendChild(header);
+
+        let expanded = null;
+
+        // TOGGLE DETAILS
+        header.addEventListener("click", () => {
+            if (expanded) {
+                expanded.remove();
+                expanded = null;
+                return;
+            }
+
+            expanded = renderFactionDetails(name);
+            entry.appendChild(expanded);
         });
 
-        box.appendChild(entry);
+        results.appendChild(entry);
     });
 }
 
@@ -135,8 +125,10 @@ function renderDraftResult(list) {
 // =====================================================
 //  BUTTON LISTENER
 // =====================================================
+
 document.getElementById("draft-button").addEventListener("click", () => {
     const name = document.getElementById("player-name").value.trim();
+
     if (!name) {
         alert("Enter your name");
         return;

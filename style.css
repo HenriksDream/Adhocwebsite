@@ -92,3 +92,13 @@ h1 {
     color: white;
     text-shadow: 0 0 6px black;
 }
+
+/* Draft details container (NOT full-size faction box) */
+.draft-details {
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
