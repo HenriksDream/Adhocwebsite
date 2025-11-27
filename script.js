@@ -1,3 +1,16 @@
+async function loadDraft() {
+    const res = await fetch("https://vps.henriksadhoc.se/api/draft");
+    return await res.json();
+}
+
+async function saveDraft(data) {
+    await fetch("https://vps.henriksadhoc.se/api/draft", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+}
+
 let allFactions = {};
 const players = ["Tjuven i bagdad", "NöffNöff", "Gissa Mitt Jobb", "Piss I Handfatet"];
 
@@ -119,6 +132,14 @@ function runDraft() {
     });
 
     setupFilterDropdown();
+    saveDraft({
+    players: Object.fromEntries(
+        Array.from(document.querySelectorAll(".faction"))
+            .map(box => [box.dataset.name, box.dataset.player])
+    ),
+    order: ["dummy"]  // just something for now
+});
+    
 }
 
 
@@ -187,3 +208,11 @@ function applyPlayerFilter(player) {
         }
     });
 }
+
+loadDraft().then(d => {
+    if (!d.players) return;
+
+    Object.entries(d.players).forEach(([faction, player]) => {
+        if (player) assignFactionToPlayer(faction, player);
+    });
+});
