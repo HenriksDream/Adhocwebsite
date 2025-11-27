@@ -31,7 +31,6 @@ fetch("factions.json")
 
         // load saved state
         const saved = await loadDraft();
-        restoreDraft(saved);
 
         // create filter dropdown after restore
         setupFilterDropdown();
