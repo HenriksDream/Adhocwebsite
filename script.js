@@ -1,115 +1,96 @@
 // =====================================================
-//  LOADING & RENDERING ALL FACTIONS (original viewer)
+//  LOAD ALL FACTIONS (but don't display anything yet)
 // =====================================================
-
-const JSON_FILE = "factions.json";
-
-// Proxy helper (your original code used this)
-function prox(path) {
-    return path; // no proxying needed unless you use proxy.py
-}
 
 let allFactions = {};
 
-fetch(JSON_FILE)
+function prox(p) {
+    return p; // keep as-is (your proxy handler)
+}
+
+fetch("factions.json")
     .then(r => r.json())
-    .then(factions => {
-        allFactions = factions;
-        renderAllFactions(factions);
-    })
+    .then(data => allFactions = data)
     .catch(err => console.error("Error loading factions.json:", err));
 
 
-// -------- Render all factions on the page ----------
-function renderAllFactions(factions) {
-    const container = document.getElementById("faction-container");
+// =====================================================
+//  RENDER A SINGLE FACTION'S IMAGES
+// =====================================================
+function renderFactionDetails(name) {
+    const data = allFactions[name];
+    if (!data) return null;
 
-    Object.entries(factions).forEach(([name, data]) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "faction";
 
-        // OUTER BOX
-        const factionBox = document.createElement("div");
-        factionBox.className = "faction";
+    const header = document.createElement("div");
+    header.className = "faction-header";
 
-        // ADD UNIQUE ID (required for draft scrolling)
-        factionBox.id = "faction-" + name.replace(/\s+/g, "-");
+    const icon = document.createElement("img");
+    icon.src = prox(data.symbol);
+    icon.className = "faction-icon";
 
-        // HEADER
-        const header = document.createElement("div");
-        header.className = "faction-header";
+    const title = document.createElement("h2");
+    title.textContent = name;
 
-        const icon = document.createElement("img");
-        icon.src = prox(data.symbol);
-        icon.className = "faction-icon";
+    header.appendChild(icon);
+    header.appendChild(title);
+    wrapper.appendChild(header);
 
-        const title = document.createElement("h2");
-        title.textContent = name;
+    const content = document.createElement("div");
+    content.className = "faction-content";
+    content.style.display = "block";
 
-        header.appendChild(icon);
-        header.appendChild(title);
+    const grid = document.createElement("div");
+    grid.className = "big-image-grid";
 
-        // COLLAPSIBLE CONTENT
-        const content = document.createElement("div");
-        content.className = "faction-content";
+    const mapping = {
+        "home_system": "Home System",
+        "agent": "Agent",
+        "commander": "Commander",
+        "hero": "Hero",
+        "mech": "Mech",
+        "faction_tech_1": "Faction Tech I",
+        "faction_tech_2": "Faction Tech II",
+        "breakthrough": "Breakthrough",
+        "promissory": "Promissory",
+        "flagship_front": "Flagship (Front)",
+        "flagship_back": "Flagship (Back)",
+        "faction_sheet_front": "Faction Sheet (Front)",
+        "faction_sheet_back": "Faction Sheet (Back)"
+    };
 
-        const grid = document.createElement("div");
-        grid.className = "big-image-grid";
+    Object.entries(mapping).forEach(([key, label]) => {
+        if (!data[key]) return;
 
-        // MAP JSON KEYS TO LABELS
-        const mapping = {
-            "home_system": "Home System",
-            "agent": "Agent",
-            "commander": "Commander",
-            "hero": "Hero",
-            "mech": "Mech",
-            "faction_tech_1": "Faction Tech I",
-            "faction_tech_2": "Faction Tech II",
-            "breakthrough": "Breakthrough",
-            "promissory": "Promissory",
-            "flagship_front": "Flagship (Front)",
-            "flagship_back": "Flagship (Back)",
-            "faction_sheet_front": "Faction Sheet (Front)",
-            "faction_sheet_back": "Faction Sheet (Back)"
-        };
+        const box = document.createElement("div");
+        box.className = "image-box";
 
-        Object.entries(mapping).forEach(([key, label]) => {
-            if (!data[key]) return;
+        const img = document.createElement("img");
+        img.src = prox(data[key]);
 
-            const box = document.createElement("div");
-            box.className = "image-box";
+        const caption = document.createElement("div");
+        caption.className = "caption";
+        caption.textContent = label;
 
-            const img = document.createElement("img");
-            img.src = prox(data[key]);
+        box.appendChild(img);
+        box.appendChild(caption);
 
-            const caption = document.createElement("div");
-            caption.className = "caption";
-            caption.textContent = label;
-
-            box.appendChild(img);
-            box.appendChild(caption);
-            grid.appendChild(box);
-        });
-
-        content.appendChild(grid);
-
-        // CLICK TO TOGGLE
-        header.onclick = () => {
-            content.style.display =
-                content.style.display === "block" ? "none" : "block";
-        };
-
-        factionBox.appendChild(header);
-        factionBox.appendChild(content);
-        container.appendChild(factionBox);
+        grid.appendChild(box);
     });
+
+    content.appendChild(grid);
+    wrapper.appendChild(content);
+
+    return wrapper;
 }
 
 
-
 // =====================================================
-//  DRAFTING SYSTEM (3 random factions per player)
+//  DRAFT SYSTEM
 // =====================================================
 
-// Pick N random factions
 function pickRandomFactions(n) {
     const keys = Object.keys(allFactions);
     return keys
@@ -118,46 +99,45 @@ function pickRandomFactions(n) {
         .slice(0, n);
 }
 
+function renderDraftResult(list) {
+    const box = document.getElementById("draft-results");
+    box.innerHTML = "";
 
-// Render the draft result tiles
-function renderDraftResult(factions) {
-    const container = document.getElementById("draft-results");
-    container.innerHTML = "";
+    list.forEach(name => {
+        const entry = document.createElement("div");
+        entry.className = "faction";
+        entry.style.cursor = "pointer";
 
-    factions.forEach(name => {
-        const box = document.createElement("div");
-        box.className = "faction";
-        box.style.cursor = "pointer";
-
-        box.innerHTML = `
+        entry.innerHTML = `
             <div class="faction-header">
                 <img class="faction-icon" src="${prox(allFactions[name].symbol)}">
                 <h2>${name}</h2>
             </div>
         `;
 
-        // Clicking a draft pick scrolls to the full faction block
-        box.addEventListener("click", () => {
-            const id = "faction-" + name.replace(/\s+/g, "-");
-            const realSection = document.getElementById(id);
-            if (!realSection) return;
+        // On click → show full details BELOW this entry
+        entry.addEventListener("click", () => {
+            // Remove old open sections
+            const old = entry.querySelector(".draft-expanded");
+            if (old) old.remove();
 
-            realSection.scrollIntoView({ behavior: "smooth" });
-
-            const content = realSection.querySelector(".faction-content");
-            if (content) content.style.display = "block";
+            // Add new viewer
+            const details = renderFactionDetails(name);
+            details.classList.add("draft-expanded");
+            entry.appendChild(details);
         });
 
-        container.appendChild(box);
+        box.appendChild(entry);
     });
 }
 
 
-// Draft button
+// =====================================================
+//  BUTTON LISTENER
+// =====================================================
 document.getElementById("draft-button").addEventListener("click", () => {
-    const playerName = document.getElementById("player-name").value.trim();
-
-    if (!playerName) {
+    const name = document.getElementById("player-name").value.trim();
+    if (!name) {
         alert("Enter your name");
         return;
     }
