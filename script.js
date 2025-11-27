@@ -20,6 +20,9 @@ fetch("factions.json")
     .then(data => {
         allFactions = data;
         renderAllFactions(data);
+
+        // After rendering, restore saved assignments
+        loadDraft().then(d => restoreDraft(d));
     });
 
 
@@ -33,8 +36,8 @@ function renderAllFactions(factions) {
     Object.entries(factions).forEach(([name, data]) => {
         const factionBox = document.createElement("div");
         factionBox.className = "faction";
-        factionBox.dataset.name = name; // store base name
-        factionBox.dataset.player = ""; // player assignment
+        factionBox.dataset.name = name;
+        factionBox.dataset.player = "";
 
         // Header
         const header = document.createElement("div");
@@ -60,8 +63,6 @@ function renderAllFactions(factions) {
 
         Object.entries(data).forEach(([key, url]) => {
             if (!url.includes(".jpg")) return;
-
-            // Skip symbols, already used
             if (key.includes("symbol")) return;
 
             const box = document.createElement("div");
@@ -110,12 +111,11 @@ function shuffle(arr) {
 document.getElementById("draft-button").addEventListener("click", () => {
     const pass = prompt("Enter draft password:");
     if (pass !== "hejkasper1337") return;
-
     runDraft();
 });
 
 
-function runDraft() {
+async function runDraft() {
     const factionNames = Object.keys(allFactions).slice();
     shuffle(factionNames);
 
@@ -132,14 +132,19 @@ function runDraft() {
     });
 
     setupFilterDropdown();
-    saveDraft({
-    players: Object.fromEntries(
-        Array.from(document.querySelectorAll(".faction"))
-            .map(box => [box.dataset.name, box.dataset.player])
-    ),
-    order: ["dummy"]  // just something for now
-});
-    
+
+    // -------- SAVE TO BACKEND --------
+    const draftData = {
+        players: {},
+        order: selected
+    };
+
+    const boxes = document.querySelectorAll(".faction");
+    boxes.forEach(box => {
+        draftData.players[box.dataset.name] = box.dataset.player;
+    });
+
+    await saveDraft(draftData);
 }
 
 
@@ -171,12 +176,16 @@ function clearPlayerAssignments() {
 // ---------------------------------------------------------
 // RESET DRAFT
 // ---------------------------------------------------------
-document.getElementById("reset-button").addEventListener("click", () => {
+document.getElementById("reset-button").addEventListener("click", async () => {
     const pass = prompt("Enter reset password:");
     if (pass !== "hejkasper1337") return;
 
     clearPlayerAssignments();
     document.getElementById("player-filter").style.display = "none";
+
+    await fetch("https://vps.henriksadhoc.se/api/reset", {
+        method: "POST"
+    });
 });
 
 
@@ -187,7 +196,6 @@ function setupFilterDropdown() {
     const filter = document.getElementById("player-filter");
     filter.style.display = "inline-block";
 
-    // Fill dropdown
     filter.innerHTML = `<option value="all">Show All Factions</option>`;
     players.forEach(p => {
         filter.innerHTML += `<option value="${p}">${p}</option>`;
@@ -200,19 +208,23 @@ function applyPlayerFilter(player) {
     const boxes = document.querySelectorAll(".faction");
 
     boxes.forEach(box => {
-        if (player === "all") {
-            box.style.display = "block";
-        } else {
-            box.style.display =
-                box.dataset.player === player ? "block" : "none";
-        }
+        box.style.display =
+            player === "all" || box.dataset.player === player
+                ? "block"
+                : "none";
     });
 }
 
-loadDraft().then(d => {
-    if (!d.players) return;
 
-    Object.entries(d.players).forEach(([faction, player]) => {
+// ---------------------------------------------------------
+// RESTORE DRAFT FROM SERVER
+// ---------------------------------------------------------
+function restoreDraft(draft) {
+    if (!draft || !draft.players) return;
+
+    Object.entries(draft.players).forEach(([faction, player]) => {
         if (player) assignFactionToPlayer(faction, player);
     });
-});
+
+    setupFilterDropdown();
+}
