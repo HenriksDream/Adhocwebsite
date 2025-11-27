@@ -24,20 +24,8 @@
 
 <body>
 
-    <div id="site-version">v…</div>
-    <script>
-        // Cloudflare Pages commit SHA
-        fetch("/__cloudflare_pages/manifest.json")
-            .then(r => r.json())
-            .then(m => {
-                let sha = m.commit_sha ?? "";
-                if (sha) sha = sha.substring(0, 7);
-                document.getElementById("site-version").textContent = "v" + sha;
-            })
-            .catch(() => {
-                document.getElementById("site-version").textContent = "v-local";
-            });
-    </script>
+    <!-- MANUAL VERSION NUMBER -->
+    <div id="site-version">v1.0.0</div>
 
     <h1>Twilight Imperium Draft 2025-11-29</h1>
 
@@ -64,7 +52,7 @@
 
     <div id="faction-container"></div>
 
-    <!-- MODAL MUST BE ABOVE SCRIPT TAG -->
+    <!-- IMAGE MODAL -->
     <div id="img-modal">
         <img id="img-modal-content" src="">
     </div>
