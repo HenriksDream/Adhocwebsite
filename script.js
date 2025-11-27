@@ -233,11 +233,14 @@ function restoreDraft(draft) {
         const box = document.querySelector(`.faction[data-name="${name}"]`);
         if (!box) return;
 
-        // restore internal data
         box.dataset.player = player;
 
-        // restore visible title
         const h2 = box.querySelector("h2");
         h2.textContent = `${name} — ${player}`;
     });
+
+    // FIX: refresh UI after applying restored data
+    applyPlayerFilter("all");
+    setupFilterDropdown();
 }
+
