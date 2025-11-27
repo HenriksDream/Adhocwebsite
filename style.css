@@ -103,3 +103,15 @@ h1 {
     border-radius: 10px;
     margin-top: 15px;
 }
+
+#site-version {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    color: white;
+    background: rgba(0,0,0,0.4);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 9999;
+}

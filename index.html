@@ -18,6 +18,16 @@
         v1.0.0
     </div>
 
+    <div id="site-version"></div>
+        <script>
+    fetch("/__pages_manifest__")
+    .then(r => r.json())
+    .then(m => {
+        const sha = m.commit_sha?.substring(0, 7) || "unknown";
+        document.getElementById("site-version").textContent = "v" + sha;
+    });
+</script>
+
     <h1>Twilight Imperium Faction Viewer + Draft</h1>
 
     <!-- ==== DRAFT UI ==== -->
