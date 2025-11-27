@@ -1,5 +1,5 @@
 let allFactions = {};
-const players = ["Daniel", "Mattias", "Kasper", "Henrik"];
+const players = ["Tjuven i bagdad", "NöffNöff", "GissaMittJobb", "PissIHandfatet"];
 
 // Load all factions
 fetch("factions.json")
