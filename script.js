@@ -19,27 +19,27 @@ async function saveDraft(data) {
 // DATA + INITIAL LOAD
 // =======================
 let allFactions = {};
-const players = [
-    "Tjuven i bagdad",
-    "NöffNöff",
-    "Gissa Mitt Jobb",
-    "Piss I Handfatet"
-];
+const players = ["Tjuven i bagdad", "NöffNöff", "Gissa Mitt Jobb", "Piss I Handfatet"];
 
 fetch("factions.json")
     .then(res => res.json())
     .then(async data => {
         allFactions = data;
+
+        // render boxes first
         renderAllFactions(data);
 
-        // restore saved draft AFTER render
-        const draft = await loadDraft();
-        restoreDraft(draft);
+        // load saved state
+        const saved = await loadDraft();
+        restoreDraft(saved);
+
+        // create filter dropdown after restore
+        setupFilterDropdown();
     });
 
 
 // =======================
-// RENDER FACTIONS
+// RENDER MAIN VIEW
 // =======================
 function renderAllFactions(factions) {
     const container = document.getElementById("faction-container");
@@ -72,11 +72,11 @@ function renderAllFactions(factions) {
         grid.className = "big-image-grid";
 
         Object.entries(data).forEach(([key, url]) => {
-            if (!url.endsWith(".jpg")) return;
+            if (!url.includes(".jpg")) return;
             if (key.includes("symbol")) return;
 
-            const imgBox = document.createElement("div");
-            imgBox.className = "image-box";
+            const boxImg = document.createElement("div");
+            boxImg.className = "image-box";
 
             const img = document.createElement("img");
             img.src = url;
@@ -85,13 +85,12 @@ function renderAllFactions(factions) {
             label.className = "caption";
             label.textContent = key.replaceAll("_", " ");
 
-            imgBox.appendChild(img);
-            imgBox.appendChild(label);
-            grid.appendChild(imgBox);
+            boxImg.appendChild(img);
+            boxImg.appendChild(label);
+            grid.appendChild(boxImg);
         });
 
         content.appendChild(grid);
-
         header.onclick = () => {
             content.style.display =
                 content.style.display === "block" ? "none" : "block";
@@ -105,7 +104,7 @@ function renderAllFactions(factions) {
 
 
 // =======================
-// SHUFFLE
+// HELPER FUNCTIONS
 // =======================
 function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -114,18 +113,31 @@ function shuffle(arr) {
     }
 }
 
+function assignFactionToPlayer(name, player) {
+    const box = document.querySelector(`.faction[data-name="${name}"]`);
+    if (!box) return;
+
+    const h2 = box.querySelector("h2");
+    h2.textContent = `${name} — ${player}`;
+    box.dataset.player = player;
+}
+
+function clearPlayerAssignments() {
+    document.querySelectorAll(".faction").forEach(box => {
+        const h2 = box.querySelector("h2");
+        h2.textContent = box.dataset.name;
+        box.dataset.player = "";
+    });
+}
+
 
 // =======================
-// DRAFT
+// DRAFT LOGIC
 // =======================
 document.getElementById("draft-button").addEventListener("click", async () => {
     const pass = prompt("Enter draft password:");
     if (pass !== "hejkasper1337") return;
 
-    await runDraft();
-});
-
-async function runDraft() {
     const factionNames = Object.keys(allFactions).slice();
     shuffle(factionNames);
 
@@ -141,53 +153,34 @@ async function runDraft() {
         i++;
     });
 
-    setupFilterDropdown();
-
-    // SAVE DRAFT
-    const draft = {
+    // save complete draft to backend
+    const data = {
         players: {},
         order: selected
     };
 
     document.querySelectorAll(".faction").forEach(box => {
-        draft.players[box.dataset.name] = box.dataset.player;
+        data.players[box.dataset.name] = box.dataset.player;
     });
 
-    await saveDraft(draft);
-}
+    await saveDraft(data);
+
+    setupFilterDropdown();
+});
 
 
 // =======================
-// ASSIGN / CLEAR
-// =======================
-function assignFactionToPlayer(name, player) {
-    document.querySelectorAll(".faction").forEach(box => {
-        if (box.dataset.name === name) {
-            box.dataset.player = player;
-            box.querySelector("h2").textContent = `${name} — ${player}`;
-        }
-    });
-}
-
-function clearPlayerAssignments() {
-    document.querySelectorAll(".faction").forEach(box => {
-        box.dataset.player = "";
-        box.querySelector("h2").textContent = box.dataset.name;
-    });
-}
-
-
-// =======================
-// RESET
+// RESET DRAFT
 // =======================
 document.getElementById("reset-button").addEventListener("click", async () => {
     const pass = prompt("Enter reset password:");
     if (pass !== "hejkasper1337") return;
 
     clearPlayerAssignments();
-    document.getElementById("player-filter").style.display = "none";
 
     await fetch("https://vps.henriksadhoc.se/api/reset", { method: "POST" });
+
+    document.getElementById("player-filter").style.display = "none";
 });
 
 
@@ -217,14 +210,12 @@ function applyPlayerFilter(player) {
 
 
 // =======================
-// RESTORE FROM SERVER
+// RESTORE DRAFT
 // =======================
 function restoreDraft(draft) {
     if (!draft || !draft.players) return;
 
-    Object.entries(draft.players).forEach(([faction, player]) => {
-        if (player) assignFactionToPlayer(faction, player);
+    Object.entries(draft.players).forEach(([name, player]) => {
+        if (player) assignFactionToPlayer(name, player);
     });
-
-    setupFilterDropdown();
 }
