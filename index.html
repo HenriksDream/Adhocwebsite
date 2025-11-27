@@ -26,8 +26,8 @@
 
     <div id="site-version">v…</div>
     <script>
-        // Try Cloudflare Pages manifest
-        fetch("/__pages_manifest__")
+        // Cloudflare Pages commit SHA
+        fetch("/__cloudflare_pages/manifest.json")
             .then(r => r.json())
             .then(m => {
                 let sha = m.commit_sha ?? "";
@@ -35,7 +35,6 @@
                 document.getElementById("site-version").textContent = "v" + sha;
             })
             .catch(() => {
-                // Fallback for local testing or failure
                 document.getElementById("site-version").textContent = "v-local";
             });
     </script>
@@ -65,11 +64,11 @@
 
     <div id="faction-container"></div>
 
-    <script src="script.js"></script>
-
+    <!-- MODAL MUST BE ABOVE SCRIPT TAG -->
     <div id="img-modal">
-    <img id="img-modal-content" src="">
-    
-</div>
+        <img id="img-modal-content" src="">
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

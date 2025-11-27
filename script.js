@@ -24,21 +24,17 @@ async function saveDraft(data) {
 let allFactions = {};
 const players = ["Tjuven i bagdad", "NöffNöff", "Gissa Mitt Jobb", "Piss I Handfatet"];
 
-// Load factions first
 fetch("factions.json")
     .then(res => res.json())
     .then(async data => {
 
         allFactions = data;
 
-        // 1. Render faction boxes
         renderAllFactions(data);
 
-        // 2. Load saved draft (AFTER render)
         const saved = await loadDraft();
         restoreDraft(saved);
 
-        // 3. Filter dropdown created last
         setupFilterDropdown();
     });
 
@@ -56,7 +52,6 @@ function renderAllFactions(factions) {
         box.dataset.name = name;
         box.dataset.player = "";
 
-        // header
         const header = document.createElement("div");
         header.className = "faction-header";
 
@@ -71,7 +66,6 @@ function renderAllFactions(factions) {
         header.appendChild(icon);
         header.appendChild(title);
 
-        // collapsible content
         const content = document.createElement("div");
         content.className = "faction-content";
 
@@ -117,7 +111,7 @@ function renderAllFactions(factions) {
 function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j]], arr[i];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
 
@@ -149,7 +143,6 @@ async function runDraft() {
 
     setupFilterDropdown();
 
-    // Save everything
     const draft = {
         players: {},
         order: selected
@@ -248,21 +241,22 @@ function restoreDraft(draft) {
     applyPlayerFilter("all");
     setupFilterDropdown();
 }
-// =========== IMAGE ENLARGE CLICK ===========
 
-// Create modal references
+
+// =======================
+// IMAGE ENLARGE
+// =======================
 const modal = document.getElementById("img-modal");
 const modalImg = document.getElementById("img-modal-content");
 
-// Delegate all img clicks
+// Only enlarge real faction images, not icons
 document.addEventListener("click", (e) => {
-    if (e.target.tagName === "IMG") {
+    if (e.target.matches(".image-box img")) {
         modalImg.src = e.target.src;
         modal.style.display = "block";
     }
 });
 
-// Close modal when clicking the image OR outside of it
 modal.addEventListener("click", () => {
     modal.style.display = "none";
 });
