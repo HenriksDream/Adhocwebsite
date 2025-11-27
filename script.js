@@ -1,3 +1,6 @@
+//----------------------------------------------------
+// API HELPERS
+//----------------------------------------------------
 async function loadDraft() {
     const res = await fetch("https://vps.henriksadhoc.se/api/draft");
     return await res.json();
@@ -11,35 +14,39 @@ async function saveDraft(data) {
     });
 }
 
+//----------------------------------------------------
+// GLOBALS
+//----------------------------------------------------
 let allFactions = {};
 const players = ["Tjuven i bagdad", "NöffNöff", "Gissa Mitt Jobb", "Piss I Handfatet"];
 
-// Load all factions
+//----------------------------------------------------
+// LOAD STATIC FACTION IMAGES
+//----------------------------------------------------
 fetch("factions.json")
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
         allFactions = data;
         renderAllFactions(data);
 
-        // After rendering, restore saved assignments
-        loadDraft().then(d => restoreDraft(d));
+        // AFTER the DOM exists → restore draft
+        restoreDraft();
     });
 
 
-// ---------------------------------------------------------
-// RENDER MAIN FACTION VIEWER
-// ---------------------------------------------------------
+//----------------------------------------------------
+// RENDER FACTIONS
+//----------------------------------------------------
 function renderAllFactions(factions) {
     const container = document.getElementById("faction-container");
     container.innerHTML = "";
 
     Object.entries(factions).forEach(([name, data]) => {
-        const factionBox = document.createElement("div");
-        factionBox.className = "faction";
-        factionBox.dataset.name = name;
-        factionBox.dataset.player = "";
+        const box = document.createElement("div");
+        box.className = "faction";
+        box.dataset.name = name;           // keep original
+        box.dataset.player = "";           // will be overwritten by restoreDraft()
 
-        // Header
         const header = document.createElement("div");
         header.className = "faction-header";
 
@@ -54,7 +61,6 @@ function renderAllFactions(factions) {
         header.appendChild(icon);
         header.appendChild(title);
 
-        // Collapsible content
         const content = document.createElement("div");
         content.className = "faction-content";
 
@@ -62,22 +68,22 @@ function renderAllFactions(factions) {
         grid.className = "big-image-grid";
 
         Object.entries(data).forEach(([key, url]) => {
-            if (!url.includes(".jpg")) return;
+            if (!url.endsWith(".jpg")) return;
             if (key.includes("symbol")) return;
 
-            const box = document.createElement("div");
-            box.className = "image-box";
+            const imgBox = document.createElement("div");
+            imgBox.className = "image-box";
 
             const img = document.createElement("img");
             img.src = url;
 
-            const label = document.createElement("div");
-            label.className = "caption";
-            label.textContent = key.replaceAll("_", " ");
+            const caption = document.createElement("div");
+            caption.className = "caption";
+            caption.textContent = key.replaceAll("_", " ");
 
-            box.appendChild(img);
-            box.appendChild(label);
-            grid.appendChild(box);
+            imgBox.appendChild(img);
+            imgBox.appendChild(caption);
+            grid.appendChild(imgBox);
         });
 
         content.appendChild(grid);
@@ -87,144 +93,110 @@ function renderAllFactions(factions) {
                 content.style.display === "block" ? "none" : "block";
         };
 
-        factionBox.appendChild(header);
-        factionBox.appendChild(content);
-        container.appendChild(factionBox);
+        box.appendChild(header);
+        box.appendChild(content);
+        container.appendChild(box);
     });
 }
 
 
-// ---------------------------------------------------------
-// SHUFFLE
-// ---------------------------------------------------------
-function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-}
-
-
-// ---------------------------------------------------------
-// DRAFT LOGIC
-// ---------------------------------------------------------
-document.getElementById("draft-button").addEventListener("click", () => {
-    const pass = prompt("Enter draft password:");
-    if (pass !== "hejkasper1337") return;
-    runDraft();
-});
-
-
-async function runDraft() {
-    const factionNames = Object.keys(allFactions).slice();
-    shuffle(factionNames);
-
-    const picksNeeded = players.length * 3;
-    const selected = factionNames.slice(0, picksNeeded);
-
-    clearPlayerAssignments();
-
-    let i = 0;
-    selected.forEach(faction => {
-        const p = players[i % players.length];
-        assignFactionToPlayer(faction, p);
-        i++;
-    });
-
-    setupFilterDropdown();
-
-    // -------- SAVE TO BACKEND --------
-    const draftData = {
-        players: {},
-        order: selected
-    };
-
-    const boxes = document.querySelectorAll(".faction");
-    boxes.forEach(box => {
-        draftData.players[box.dataset.name] = box.dataset.player;
-    });
-
-    await saveDraft(draftData);
-}
-
-
-// Assign a faction
+//----------------------------------------------------
+// ASSIGN FACTION
+//----------------------------------------------------
 function assignFactionToPlayer(factionName, playerName) {
     const boxes = document.querySelectorAll(".faction");
-
     boxes.forEach(box => {
         if (box.dataset.name === factionName) {
-            const h2 = box.querySelector("h2");
-            h2.textContent = `${factionName} — ${playerName}`;
             box.dataset.player = playerName;
+            const h2 = box.querySelector("h2");
+            h2.textContent = playerName
+                ? `${factionName} — ${playerName}`
+                : factionName;
         }
     });
 }
 
 
-// Clear previous draft
-function clearPlayerAssignments() {
-    const boxes = document.querySelectorAll(".faction");
-    boxes.forEach(box => {
-        const h2 = box.querySelector("h2");
-        h2.textContent = box.dataset.name;
+//----------------------------------------------------
+// CLEAR (used only by reset button)
+//----------------------------------------------------
+function clearAssignments() {
+    document.querySelectorAll(".faction").forEach(box => {
         box.dataset.player = "";
+        box.querySelector("h2").textContent = box.dataset.name;
     });
 }
 
 
-// ---------------------------------------------------------
-// RESET DRAFT
-// ---------------------------------------------------------
+//----------------------------------------------------
+// DRAFT BUTTON
+//----------------------------------------------------
+document.getElementById("draft-button").addEventListener("click", async () => {
+    const pass = prompt("Enter draft password:");
+    if (pass !== "hejkasper1337") return;
+
+    runDraft();
+});
+
+function runDraft() {
+    const factionNames = Object.keys(allFactions).slice();
+    shuffle(factionNames);
+
+    const picks = players.length * 3;
+    const selected = factionNames.slice(0, picks);
+
+    clearAssignments(); // only here – NOT on page load
+
+    let i = 0;
+    selected.forEach(f => {
+        assignFactionToPlayer(f, players[i % players.length]);
+        i++;
+    });
+
+    // SAVE TO API
+    const payload = {
+        players: Object.fromEntries(
+            Array.from(document.querySelectorAll(".faction"))
+                .map(box => [box.dataset.name, box.dataset.player])
+        ),
+        order: selected
+    };
+
+    saveDraft(payload);
+}
+
+
+//----------------------------------------------------
+// RESET BUTTON
+//----------------------------------------------------
 document.getElementById("reset-button").addEventListener("click", async () => {
     const pass = prompt("Enter reset password:");
     if (pass !== "hejkasper1337") return;
 
-    clearPlayerAssignments();
-    document.getElementById("player-filter").style.display = "none";
-
-    await fetch("https://vps.henriksadhoc.se/api/reset", {
-        method: "POST"
-    });
+    clearAssignments();
+    await fetch("https://vps.henriksadhoc.se/api/reset", { method: "POST" });
 });
 
 
-// ---------------------------------------------------------
-// PLAYER FILTER DROPDOWN
-// ---------------------------------------------------------
-function setupFilterDropdown() {
-    const filter = document.getElementById("player-filter");
-    filter.style.display = "inline-block";
+//----------------------------------------------------
+// ON PAGE LOAD → RESTORE DRAFT
+//----------------------------------------------------
+async function restoreDraft() {
+    const saved = await loadDraft();
+    if (!saved.players) return;
 
-    filter.innerHTML = `<option value="all">Show All Factions</option>`;
-    players.forEach(p => {
-        filter.innerHTML += `<option value="${p}">${p}</option>`;
-    });
-
-    filter.onchange = () => applyPlayerFilter(filter.value);
-}
-
-function applyPlayerFilter(player) {
-    const boxes = document.querySelectorAll(".faction");
-
-    boxes.forEach(box => {
-        box.style.display =
-            player === "all" || box.dataset.player === player
-                ? "block"
-                : "none";
-    });
-}
-
-
-// ---------------------------------------------------------
-// RESTORE DRAFT FROM SERVER
-// ---------------------------------------------------------
-function restoreDraft(draft) {
-    if (!draft || !draft.players) return;
-
-    Object.entries(draft.players).forEach(([faction, player]) => {
+    Object.entries(saved.players).forEach(([faction, player]) => {
         if (player) assignFactionToPlayer(faction, player);
     });
+}
 
-    setupFilterDropdown();
+
+//----------------------------------------------------
+// UTILS
+//----------------------------------------------------
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
 }
