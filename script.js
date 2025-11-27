@@ -22,7 +22,7 @@ async function saveDraft(data) {
 // DATA + INITIAL LOAD
 // =======================
 let allFactions = {};
-const players = ["Tjuven i bagdad", "NöffNöff", "Gissa Mitt Jobb", "Piss I Handfatet"];
+const players = ["Daniel", "Kasper", "Mattias", "Henrik"];
 
 fetch("factions.json")
     .then(res => res.json())
