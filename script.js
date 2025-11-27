@@ -1,137 +1,189 @@
-// =====================================================
-// LOAD ALL FACTIONS (do not render anything at startup)
-// =====================================================
-
 let allFactions = {};
+const players = ["Daniel", "Mattias", "Kasper", "Henrik"];
 
-function prox(p) {
-    return p; // no proxying needed
-}
-
+// Load all factions
 fetch("factions.json")
-    .then(r => r.json())
-    .then(data => allFactions = data)
-    .catch(err => console.error("Error loading factions.json:", err));
-
-
-// =====================================================
-// RENDER A FACTION'S DETAILS (images grid)
-// =====================================================
-
-function renderFactionDetails(name) {
-    const data = allFactions[name];
-    if (!data) return null;
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "draft-details"; // NOT .faction
-
-    const grid = document.createElement("div");
-    grid.className = "big-image-grid";
-
-    const mapping = {
-        home_system: "Home System",
-        agent: "Agent",
-        commander: "Commander",
-        hero: "Hero",
-        mech: "Mech",
-        faction_tech_1: "Faction Tech I",
-        faction_tech_2: "Faction Tech II",
-        breakthrough: "Breakthrough",
-        promissory: "Promissory",
-        faction_sheet_front: "Faction Sheet (Front)",
-        faction_sheet_back: "Faction Sheet (Back)"
-    };
-
-    Object.entries(mapping).forEach(([key, label]) => {
-        if (!data[key]) return;
-
-        const box = document.createElement("div");
-        box.className = "image-box";
-
-        const img = document.createElement("img");
-        img.src = prox(data[key]);
-
-        const caption = document.createElement("div");
-        caption.className = "caption";
-        caption.textContent = label;
-
-        box.appendChild(img);
-        box.appendChild(caption);
-        grid.appendChild(box);
+    .then(res => res.json())
+    .then(data => {
+        allFactions = data;
+        renderAllFactions(data);
     });
 
-    wrapper.appendChild(grid);
-    return wrapper;
-}
 
+// ---------------------------------------------------------
+// RENDER MAIN FACTION VIEWER
+// ---------------------------------------------------------
+function renderAllFactions(factions) {
+    const container = document.getElementById("faction-container");
+    container.innerHTML = "";
 
-// =====================================================
-// DRAFT SYSTEM
-// =====================================================
+    Object.entries(factions).forEach(([name, data]) => {
+        const factionBox = document.createElement("div");
+        factionBox.className = "faction";
+        factionBox.dataset.name = name; // store base name
+        factionBox.dataset.player = ""; // player assignment
 
-function pickRandomFactions(n) {
-    const keys = Object.keys(allFactions);
-    return keys
-        .slice()
-        .sort(() => Math.random() - 0.5)
-        .slice(0, n);
-}
-
-function renderDraftResult(list) {
-    const results = document.getElementById("draft-results");
-    results.innerHTML = "";
-
-    list.forEach(name => {
-        // Draft entry — NOT the .faction class
-        const entry = document.createElement("div");
-        entry.className = "draft-entry";
-
-        // Clickable header
+        // Header
         const header = document.createElement("div");
         header.className = "faction-header";
 
+        const iconKey = Object.keys(data).find(k => k.includes("symbol"));
         const icon = document.createElement("img");
+        icon.src = data[iconKey];
         icon.className = "faction-icon";
-        icon.src = prox(allFactions[name].symbol);
 
         const title = document.createElement("h2");
         title.textContent = name;
 
         header.appendChild(icon);
         header.appendChild(title);
-        entry.appendChild(header);
 
-        let expanded = null;
+        // Collapsible content
+        const content = document.createElement("div");
+        content.className = "faction-content";
 
-        // Toggle expand/collapse
-        header.addEventListener("click", () => {
-            if (expanded) {
-                expanded.remove();
-                expanded = null;
-                return;
-            }
+        const grid = document.createElement("div");
+        grid.className = "big-image-grid";
 
-            expanded = renderFactionDetails(name);
-            entry.appendChild(expanded);
+        Object.entries(data).forEach(([key, url]) => {
+            if (!url.includes(".jpg")) return;
+
+            // Skip symbols, already used
+            if (key.includes("symbol")) return;
+
+            const box = document.createElement("div");
+            box.className = "image-box";
+
+            const img = document.createElement("img");
+            img.src = url;
+
+            const label = document.createElement("div");
+            label.className = "caption";
+            label.textContent = key.replaceAll("_", " ");
+
+            box.appendChild(img);
+            box.appendChild(label);
+            grid.appendChild(box);
         });
 
-        results.appendChild(entry);
+        content.appendChild(grid);
+
+        header.onclick = () => {
+            content.style.display =
+                content.style.display === "block" ? "none" : "block";
+        };
+
+        factionBox.appendChild(header);
+        factionBox.appendChild(content);
+        container.appendChild(factionBox);
     });
 }
 
 
-// =====================================================
-// DRAFT BUTTON
-// =====================================================
-
-document.getElementById("draft-button").addEventListener("click", () => {
-    const name = document.getElementById("player-name").value.trim();
-
-    if (!name) {
-        alert("Enter your name");
-        return;
+// ---------------------------------------------------------
+// SHUFFLE
+// ---------------------------------------------------------
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
+}
 
-    const picks = pickRandomFactions(3);
-    renderDraftResult(picks);
+
+// ---------------------------------------------------------
+// DRAFT LOGIC
+// ---------------------------------------------------------
+document.getElementById("draft-button").addEventListener("click", () => {
+    const pass = prompt("Enter draft password:");
+    if (pass !== "hejkasper1337") return;
+
+    runDraft();
 });
+
+
+function runDraft() {
+    const factionNames = Object.keys(allFactions).slice();
+    shuffle(factionNames);
+
+    const picksNeeded = players.length * 3;
+    const selected = factionNames.slice(0, picksNeeded);
+
+    clearPlayerAssignments();
+
+    let i = 0;
+    selected.forEach(faction => {
+        const p = players[i % players.length];
+        assignFactionToPlayer(faction, p);
+        i++;
+    });
+
+    setupFilterDropdown();
+}
+
+
+// Assign a faction
+function assignFactionToPlayer(factionName, playerName) {
+    const boxes = document.querySelectorAll(".faction");
+
+    boxes.forEach(box => {
+        if (box.dataset.name === factionName) {
+            const h2 = box.querySelector("h2");
+            h2.textContent = `${factionName} — ${playerName}`;
+            box.dataset.player = playerName;
+        }
+    });
+}
+
+
+// Clear previous draft
+function clearPlayerAssignments() {
+    const boxes = document.querySelectorAll(".faction");
+    boxes.forEach(box => {
+        const h2 = box.querySelector("h2");
+        h2.textContent = box.dataset.name;
+        box.dataset.player = "";
+    });
+}
+
+
+// ---------------------------------------------------------
+// RESET DRAFT
+// ---------------------------------------------------------
+document.getElementById("reset-button").addEventListener("click", () => {
+    const pass = prompt("Enter reset password:");
+    if (pass !== "hejkasper1337") return;
+
+    clearPlayerAssignments();
+    document.getElementById("player-filter").style.display = "none";
+});
+
+
+// ---------------------------------------------------------
+// PLAYER FILTER DROPDOWN
+// ---------------------------------------------------------
+function setupFilterDropdown() {
+    const filter = document.getElementById("player-filter");
+    filter.style.display = "inline-block";
+
+    // Fill dropdown
+    filter.innerHTML = `<option value="all">Show All Factions</option>`;
+    players.forEach(p => {
+        filter.innerHTML += `<option value="${p}">${p}</option>`;
+    });
+
+    filter.onchange = () => applyPlayerFilter(filter.value);
+}
+
+function applyPlayerFilter(player) {
+    const boxes = document.querySelectorAll(".faction");
+
+    boxes.forEach(box => {
+        if (player === "all") {
+            box.style.display = "block";
+        } else {
+            box.style.display =
+                box.dataset.player === player ? "block" : "none";
+        }
+    });
+}

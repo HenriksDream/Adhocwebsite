@@ -18,7 +18,7 @@ h1 {
 }
 
 /* ============================================================
-   FULL FACTION BLOCK (used only for old viewer, not draft)
+   FULL FACTION BLOCK (default viewer)
    ============================================================ */
 .faction {
     background: rgba(0, 0, 0, 0.55);
@@ -48,7 +48,7 @@ h1 {
     text-shadow: 0 0 6px black;
 }
 
-/* ===== FACTION ICON ===== */
+/* ===== ICON ===== */
 .faction-icon {
     width: 50px;
     height: 50px;
@@ -56,7 +56,7 @@ h1 {
     filter: drop-shadow(0 0 8px black);
 }
 
-/* ===== COLLAPSIBLE CONTENT (original viewer) ===== */
+/* ===== COLLAPSIBLE CONTENT ===== */
 .faction-content {
     display: none;
     margin-top: 15px;
@@ -86,7 +86,7 @@ h1 {
     box-shadow: 0 0 10px black;
 }
 
-/* ===== IMAGE LABEL ===== */
+/* ===== CAPTIONS ===== */
 .caption {
     margin-top: 8px;
     font-size: 15px;
@@ -95,27 +95,9 @@ h1 {
     text-shadow: 0 0 6px black;
 }
 
-/* ============================================================
-   DRAFT MODE BLOCKS (lighter background so stars show through)
-   ============================================================ */
-
-/* Draft entries shown AFTER clicking "Draft" */
-.draft-entry {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-}
-
-/* Header styling reused inside draft entries */
-.draft-entry .faction-header {
-    padding-bottom: 0;
-}
-
-/* Details shown under a draft pick (expanded images) */
+/* ===== DRAFT MODE EXPANSION BOX ===== */
 .draft-details {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0,0,0,0.35);
     border: 1px solid rgba(255,255,255,0.20);
     padding: 15px;
     border-radius: 10px;

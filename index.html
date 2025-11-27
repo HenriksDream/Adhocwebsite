@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twilight Imperium Faction Viewer + Draft</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,16 +11,28 @@
 
     <h1>Twilight Imperium Faction Viewer + Draft</h1>
 
-    <div id="draft-section" style="margin-bottom: 30px;">
-        <input id="player-name" 
-               type="text" 
-               placeholder="Enter your name" 
-               style="padding: 8px; font-size: 16px;">
+    <!-- ==== DRAFT UI ==== -->
+    <div id="draft-section" style="margin-bottom: 30px; text-align: center;">
 
+        <!-- Draft Button -->
         <button id="draft-button" 
-                style="padding: 8px 14px; font-size: 16px; cursor: pointer;">
+                style="padding: 12px 26px; font-size: 20px; cursor: pointer; margin-right: 10px;">
             Draft Factions
         </button>
+
+        <!-- Reset Button -->
+        <button id="reset-button" 
+                style="padding: 12px 26px; font-size: 20px; cursor: pointer; margin-left: 10px;">
+            Reset Draft
+        </button>
+
+        <!-- Player Filter -->
+        <div style="margin-top: 20px;">
+            <select id="player-filter" 
+                    style="padding: 10px; font-size: 18px; display:none; cursor:pointer;">
+                <option value="all">Show All Factions</option>
+            </select>
+        </div>
 
         <div id="draft-results" style="margin-top: 20px;"></div>
     </div>
