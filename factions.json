@@ -10,7 +10,8 @@
     "faction_tech_2": "images/theargentflight/faction_tech_2.jpg",
     "promissory": "images/theargentflight/promissory.jpg",
     "faction_sheet_front": "images/theargentflight/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/theargentflight/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/theargentflight/faction_sheet_back.jpg",
+    "complexity": 1
   },
   "The Empyrean": {
     "symbol": "images/theempyrean/symbol.jpg",
@@ -23,7 +24,8 @@
     "faction_tech_2": "images/theempyrean/faction_tech_2.jpg",
     "promissory": "images/theempyrean/promissory.jpg",
     "faction_sheet_front": "images/theempyrean/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/theempyrean/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/theempyrean/faction_sheet_back.jpg",
+    "complexity": 1
   },
   "The Mahact Gene-Sorcerers": {
     "symbol": "images/themahactgene-sorcerers/symbol.jpg",
@@ -36,7 +38,8 @@
     "faction_tech_2": "images/themahactgene-sorcerers/faction_tech_2.jpg",
     "promissory": "images/themahactgene-sorcerers/promissory.jpg",
     "faction_sheet_front": "images/themahactgene-sorcerers/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/themahactgene-sorcerers/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/themahactgene-sorcerers/faction_sheet_back.jpg",
+    "complexity": 3
   },
   "The Naaz-Rokha Alliance": {
     "symbol": "images/thenaaz-rokhaalliance/symbol.jpg",
@@ -50,7 +53,8 @@
     "breakthrough": "images/thenaaz-rokhaalliance/breakthrough.jpg",
     "promissory": "images/thenaaz-rokhaalliance/promissory.jpg",
     "faction_sheet_front": "images/thenaaz-rokhaalliance/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thenaaz-rokhaalliance/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thenaaz-rokhaalliance/faction_sheet_back.jpg",
+    "complexity": 1
   },
   "The Nomad": {
     "symbol": "images/thenomad/symbol.jpg",
@@ -63,7 +67,8 @@
     "faction_tech_2": "images/thenomad/faction_tech_2.jpg",
     "promissory": "images/thenomad/promissory.jpg",
     "faction_sheet_front": "images/thenomad/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thenomad/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thenomad/faction_sheet_back.jpg",
+    "complexity": 1
   },
   "The Titans of Ul": {
     "symbol": "images/thetitansoful/symbol.jpg",
@@ -76,7 +81,8 @@
     "faction_tech_2": "images/thetitansoful/faction_tech_2.jpg",
     "promissory": "images/thetitansoful/promissory.jpg",
     "faction_sheet_front": "images/thetitansoful/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thetitansoful/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thetitansoful/faction_sheet_back.jpg",
+    "complexity": 2
   },
   "The Vuil'Raith Cabal": {
     "symbol": "images/thevuilraithcabal/symbol.jpg",
@@ -89,7 +95,8 @@
     "breakthrough": "images/thevuilraithcabal/breakthrough.jpg",
     "promissory": "images/thevuilraithcabal/promissory.jpg",
     "faction_sheet_front": "images/thevuilraithcabal/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thevuilraithcabal/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thevuilraithcabal/faction_sheet_back.jpg",
+    "complexity": 3
   },
   "The Council Keleres": {
     "symbol": "images/thecouncilkeleres/symbol.jpg",
@@ -102,7 +109,8 @@
     "faction_tech_2": "images/thecouncilkeleres/faction_tech_2.jpg",
     "promissory": "images/thecouncilkeleres/promissory.jpg",
     "faction_sheet_front": "images/thecouncilkeleres/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thecouncilkeleres/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thecouncilkeleres/faction_sheet_back.jpg",
+    "complexity": 2
   },
   "The Crimson Rebellion": {
     "symbol": "images/thecrimsonrebellion/symbol.jpg",
@@ -116,7 +124,8 @@
     "breakthrough": "images/thecrimsonrebellion/breakthrough.jpg",
     "promissory": "images/thecrimsonrebellion/promissory.jpg",
     "faction_sheet_front": "images/thecrimsonrebellion/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thecrimsonrebellion/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thecrimsonrebellion/faction_sheet_back.jpg",
+    "complexity": 3
   },
   "The Deepwrought Scholarate": {
     "symbol": "images/thedeepwroughtscholarate/symbol.jpg",
@@ -130,7 +139,8 @@
     "breakthrough": "images/thedeepwroughtscholarate/breakthrough.jpg",
     "promissory": "images/thedeepwroughtscholarate/promissory.jpg",
     "faction_sheet_front": "images/thedeepwroughtscholarate/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/thedeepwroughtscholarate/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/thedeepwroughtscholarate/faction_sheet_back.jpg",
+    "complexity": 2
   },
   "The Firmament / The Obsidian": {
     "firmament_symbol": "images/thefirmament/symbol.jpg",
@@ -144,7 +154,7 @@
     "firmament_breakthrough": "images/thefirmament/breakthrough.jpg",
     "firmament_promissory": "images/thefirmament/promissory.jpg",
     "firmament_faction_sheet_front": "images/thefirmament/faction_sheet_front.jpg",
-    "firmament_faction_sheet_back": "images/thefirmament/faction_sheet_back.jpg",
+    "firmament_faction_sheet_back": "images/thefirmament/faction_sheet_back.jpg",    
 
     "obsidian_symbol": "images/theobsidian/symbol.jpg",
     "obsidian_home_system": "images/theobsidian/home_system.jpg",
@@ -157,7 +167,8 @@
     "obsidian_breakthrough": "images/theobsidian/breakthrough.jpg",
     "obsidian_promissory": "images/theobsidian/promissory.jpg",
     "obsidian_faction_sheet_front": "images/theobsidian/faction_sheet_front.jpg",
-    "obsidian_faction_sheet_back": "images/theobsidian/faction_sheet_back.jpg"
+    "obsidian_faction_sheet_back": "images/theobsidian/faction_sheet_back.jpg",
+    "complexity": 3
   },
   "Last Bastion": {
     "symbol": "images/lastbastion/symbol.jpg",
@@ -171,7 +182,8 @@
     "breakthrough": "images/lastbastion/breakthrough.jpg",
     "promissory": "images/lastbastion/promissory.jpg",
     "faction_sheet_front": "images/lastbastion/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/lastbastion/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/lastbastion/faction_sheet_back.jpg",
+    "complexity": 1
   },
   "The Ral Nel Consortium": {
     "symbol": "images/theralnelconsortium/symbol.jpg",
@@ -185,6 +197,7 @@
     "breakthrough": "images/theralnelconsortium/breakthrough.jpg",
     "promissory": "images/theralnelconsortium/promissory.jpg",
     "faction_sheet_front": "images/theralnelconsortium/faction_sheet_front.jpg",
-    "faction_sheet_back": "images/theralnelconsortium/faction_sheet_back.jpg"
+    "faction_sheet_back": "images/theralnelconsortium/faction_sheet_back.jpg",
+    "complexity": 1
   }
 }

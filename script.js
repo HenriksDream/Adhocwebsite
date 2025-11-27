@@ -69,11 +69,49 @@ function renderAllFactions(factions) {
         const content = document.createElement("div");
         content.className = "faction-content";
 
+        // ================================
+        // COMPLEXITY SECTION (NEW)
+        // ================================
+        const compContainer = document.createElement("div");
+        compContainer.className = "complexity-container";
+
+        const compTitle = document.createElement("div");
+        compTitle.className = "complexity-title";
+        compTitle.textContent = "Complexity";
+
+        const compDots = document.createElement("div");
+        compDots.className = "complexity-dots";
+
+        const lvl = Number(data.complexity) || 1;
+        let colors = lvl === 1 
+            ? ["green", "gray", "gray"]
+            : lvl === 2 
+                ? ["yellow", "yellow", "gray"]
+                : lvl === 3
+                    ? ["red", "red", "red"]
+                    : ["gray", "gray", "gray"];
+
+        colors.forEach(c => {
+            const d = document.createElement("div");
+            d.className = "dot " + c;
+            compDots.appendChild(d);
+        });
+
+        compContainer.appendChild(compTitle);
+        compContainer.appendChild(compDots);
+        content.appendChild(compContainer);
+
+        // ================================
+        // IMAGE GRID
+        // ================================
         const grid = document.createElement("div");
         grid.className = "big-image-grid";
 
         Object.entries(data).forEach(([key, url]) => {
-            if (!url.includes(".jpg")) return;
+
+            // FIX — prevent .includes() on numbers
+            if (typeof url !== "string") return;
+            if (!url.endsWith(".jpg")) return;
             if (key.includes("symbol")) return;
 
             const ibox = document.createElement("div");
@@ -249,7 +287,6 @@ function restoreDraft(draft) {
 const modal = document.getElementById("img-modal");
 const modalImg = document.getElementById("img-modal-content");
 
-// Only enlarge real faction images, not icons
 document.addEventListener("click", (e) => {
     if (e.target.matches(".image-box img")) {
         modalImg.src = e.target.src;
