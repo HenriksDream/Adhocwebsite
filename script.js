@@ -2,7 +2,9 @@
 // BACKEND API
 // =======================
 async function loadDraft() {
-    const res = await fetch("https://vps.henriksadhoc.se/api/draft");
+    const res = await fetch("https://vps.henriksadhoc.se/api/draft", {
+        cache: "no-store"
+    });
     return await res.json();
 }
 
@@ -10,7 +12,8 @@ async function saveDraft(data) {
     await fetch("https://vps.henriksadhoc.se/api/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        cache: "no-store"
     });
 }
 
@@ -114,7 +117,7 @@ function renderAllFactions(factions) {
 function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        [arr[i], arr[j]] = [arr[j]], arr[i];
     }
 }
 
@@ -192,7 +195,10 @@ document.getElementById("reset-button").addEventListener("click", async () => {
     clearPlayerAssignments();
     document.getElementById("player-filter").style.display = "none";
 
-    await fetch("https://vps.henriksadhoc.se/api/reset", { method: "POST" });
+    await fetch("https://vps.henriksadhoc.se/api/reset", {
+        method: "POST",
+        cache: "no-store"
+    });
 });
 
 
@@ -239,8 +245,6 @@ function restoreDraft(draft) {
         h2.textContent = `${name} — ${player}`;
     });
 
-    // FIX: refresh UI after applying restored data
     applyPlayerFilter("all");
     setupFilterDropdown();
 }
-
