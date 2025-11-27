@@ -248,3 +248,21 @@ function restoreDraft(draft) {
     applyPlayerFilter("all");
     setupFilterDropdown();
 }
+// =========== IMAGE ENLARGE CLICK ===========
+
+// Create modal references
+const modal = document.getElementById("img-modal");
+const modalImg = document.getElementById("img-modal-content");
+
+// Delegate all img clicks
+document.addEventListener("click", (e) => {
+    if (e.target.tagName === "IMG") {
+        modalImg.src = e.target.src;
+        modal.style.display = "block";
+    }
+});
+
+// Close modal when clicking the image OR outside of it
+modal.addEventListener("click", () => {
+    modal.style.display = "none";
+});
