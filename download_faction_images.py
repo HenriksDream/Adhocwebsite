@@ -45,7 +45,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/d/d9/ArgentTech2.jpg/revision/latest/scale-to-width-down/500?cb=20201226213356",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/7/72/ArgentTech1.jpg/revision/latest/scale-to-width-down/500?cb=20201226213350",
     "breakthrough": None,
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/80/ArgentPromissory.jpg/revision/latest/scale-to-width-down/77?cb=20201226213656",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/80/ArgentPromissory.jpg/revision/latest/scale-to-width-down/500?cb=20201226213656",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/4/49/ArgentFront.jpg/revision/latest/scale-to-width-down/500?cb=20201226213052",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/1b/ArgentBack.jpg/revision/latest/scale-to-width-down/500?cb=20201226212321"
   },
@@ -60,7 +60,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/bd/EmpyreanTech1.jpg/revision/latest/scale-to-width-down/500?cb=20201226213414",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/23/EmpyreanTech2.jpg/revision/latest/scale-to-width-down/500?cb=20201226213419",
     "breakthrough": None,
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/23/EmpyreanPromissory2.jpg/revision/latest/scale-to-width-down/77?cb=20201226213723",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/23/EmpyreanPromissory2.jpg/revision/latest/scale-to-width-down/500?cb=20201226213723",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/15/EmpyreanFront.jpg/revision/latest/scale-to-width-down/500?cb=20201226213115",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/a/a8/EmpyreanBack.jpg/revision/latest/scale-to-width-down/500?cb=20201226212506"
   },
@@ -150,7 +150,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/9/97/KeleresExecutiveOrder.jpg/revision/latest/scale-to-width-down/500?cb=20251121123816",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/1a/KeleresASN.jpg/revision/latest/scale-to-width-down/500?cb=20251121123805",
     "breakthrough": None,
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/0/0d/KeleresPromissory.png/revision/latest/scale-to-width-down/75?cb=20220426120824",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/0/0d/KeleresPromissory.png/revision/latest/scale-to-width-down/500?cb=20220426120824",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/b0/KeleresFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121124436",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/e/e3/KeleresFactionSheetBack.png/revision/latest/scale-to-width-down/500?cb=20220426111853"
   },
@@ -165,7 +165,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/a/aa/Subslice.png/revision/latest/scale-to-width-down/500?cb=20250925162834",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/17/RebellionTech2.png/revision/latest/scale-to-width-down/500?cb=20251015150217",
     "breakthrough": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/29/RebellionBreakthrough.png/revision/latest/scale-to-width-down/500?cb=20250930183037",
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/e/ef/Ti11_article_factions_promissorynotecards_sever.png/revision/latest/scale-to-width-down/75?cb=20250925162702",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/e/ef/Ti11_article_factions_promissorynotecards_sever.png/revision/latest/scale-to-width-down/500?cb=20250925162702",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/8e/CrimsonRebellionFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121061459",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/c/c4/CrimsonFactionSheetBack.jpg/revision/latest/scale-to-width-down/500?cb=20251121061506"
   },
@@ -180,7 +180,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/7/76/DeepwroughtTech1.png/revision/latest/scale-to-width-down/500?cb=20250930183020",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/82/DeepwroughtTech2.png/revision/latest/scale-to-width-down/500?cb=20250930183016",
     "breakthrough": "https://static.wikia.nocookie.net/twilight-imperium-4/images/9/9c/DeepwroughtBreakthrough.png/revision/latest/scale-to-width-down/500?cb=20250930183054",
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/a/af/DeepwroughtPromissory.png/revision/latest/scale-to-width-down/75?cb=20250930183059",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/a/af/DeepwroughtPromissory.png/revision/latest/scale-to-width-down/500?cb=20250930183059",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/22/DWSFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121061827",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/c/c4/DWSFactionSheetBack.jpg/revision/latest/scale-to-width-down/500?cb=20251121061839"
   },
@@ -195,7 +195,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/85/FirmamentTech1.png/revision/latest/scale-to-width-down/500?cb=20250930183209",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/0/00/FirmamentTech2.png/revision/latest/scale-to-width-down/500?cb=20250930183206",
     "breakthrough": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/89/FirmamentBreakthrough.png/revision/latest/scale-to-width-down/500?cb=20250930183223",
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/b8/FirmamentPromissory.png/revision/latest/scale-to-width-down/75?cb=20250930183226",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/b8/FirmamentPromissory.png/revision/latest/scale-to-width-down/500?cb=20250930183226",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/3/38/FirmamentFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121062023",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/26/FirmamentFactionSheetBack.jpg/revision/latest/scale-to-width-down/500?cb=20251121062032"
   },
@@ -210,7 +210,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/3/33/ObsidianTech1.png/revision/latest/scale-to-width-down/500?cb=20250930183300",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/b9/ObsidianTech_2.png/revision/latest/scale-to-width-down/500?cb=20250930183304",
     "breakthrough": "https://static.wikia.nocookie.net/twilight-imperium-4/images/d/d8/ObsidianBreakthrough.png/revision/latest/scale-to-width-down/500?cb=20250930183232",
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/d/d1/ObsidianPromissory.png/revision/latest/scale-to-width-down/75?cb=20250930183229",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/d/d1/ObsidianPromissory.png/revision/latest/scale-to-width-down/500?cb=20250930183229",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/8/84/ObsidianFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121121113",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/24/ObsidianFactionSheetBack.jpg/revision/latest/scale-to-width-down/500?cb=20251121121128"
   },
@@ -225,7 +225,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/f/fc/Ti11_article_factions_factiontechcards_proximatargetingvi.png/revision/latest/scale-to-width-down/500?cb=20250925165224",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/b6/LastBastionTech2.PNG/revision/latest/scale-to-width-down/500?cb=20251103012332",
     "breakthrough": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/b3/Ti11_article_factions_breakthroughcards_theicon.png/revision/latest/scale-to-width-down/500?cb=20250925165211",
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/11/Ti11_article_factions_promissorynotecards_raisethestandard.png/revision/latest/scale-to-width-down/75?cb=20250925165249",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/11/Ti11_article_factions_promissorynotecards_raisethestandard.png/revision/latest/scale-to-width-down/500?cb=20250925165249",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/5/50/LastBastionFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121060655",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/f/f3/LastBastionFactionSheetBack.jpg/revision/latest/scale-to-width-down/500?cb=20251121060952"
   },
@@ -240,7 +240,7 @@ factions = {
     "faction_tech_1": "https://static.wikia.nocookie.net/twilight-imperium-4/images/b/bc/RalNelTech2.png/revision/latest/scale-to-width-down/500?cb=20250930183111",
     "faction_tech_2": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/1f/RalNelTech1.png/revision/latest/scale-to-width-down/500?cb=20250930183116",
     "breakthrough": "https://static.wikia.nocookie.net/twilight-imperium-4/images/1/1a/RalNelBreakthrough.png/revision/latest/scale-to-width-down/500?cb=20250930183107",
-    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/9/98/RalNelPromissory.png/revision/latest/scale-to-width-down/75?cb=20250930183120",
+    "promissory": "https://static.wikia.nocookie.net/twilight-imperium-4/images/9/98/RalNelPromissory.png/revision/latest/scale-to-width-down/500?cb=20250930183120",
     "flagship_front": "https://static.wikia.nocookie.net/twilight-imperium-4/images/a/a9/RalNelFactionSheet.jpg/revision/latest/scale-to-width-down/500?cb=20251121061328",
     "flagship_back": "https://static.wikia.nocookie.net/twilight-imperium-4/images/2/27/RalNelFactionSheetBack.jpg/revision/latest/scale-to-width-down/500?cb=20251121061313"
   }
