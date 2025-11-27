@@ -1,17 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twilight Imperium Faction Viewer</title>
-    <link rel="stylesheet" href="style.css">
-</head>
 <body>
 
-    <h1>Twilight Imperium Faction Viewer</h1>
+    <h1>Twilight Imperium Faction Viewer + Draft</h1>
+
+    <!-- ==== DRAFT UI ==== -->
+    <div id="draft-section" style="margin-bottom: 30px;">
+        <input id="player-name" 
+               type="text" 
+               placeholder="Enter your name" 
+               style="padding: 8px; font-size: 16px;">
+
+        <button id="draft-button" 
+                style="padding: 8px 14px; font-size: 16px; cursor: pointer;">
+            Draft Factions
+        </button>
+
+        <div id="draft-results" style="margin-top: 20px;"></div>
+    </div>
 
     <div id="faction-container"></div>
 
     <script src="script.js"></script>
 </body>
-</html>
