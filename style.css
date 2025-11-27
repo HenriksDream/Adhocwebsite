@@ -17,7 +17,9 @@ h1 {
     text-shadow: 0 0 8px black;
 }
 
-/* ===== FACTION BLOCK ===== */
+/* ============================================================
+   FULL FACTION BLOCK (used only for old viewer, not draft)
+   ============================================================ */
 .faction {
     background: rgba(0, 0, 0, 0.55);
     border: 1px solid rgba(255,255,255,0.25);
@@ -46,7 +48,7 @@ h1 {
     text-shadow: 0 0 6px black;
 }
 
-/* ===== FACTION SYMBOL NEXT TO NAME ===== */
+/* ===== FACTION ICON ===== */
 .faction-icon {
     width: 50px;
     height: 50px;
@@ -54,20 +56,20 @@ h1 {
     filter: drop-shadow(0 0 8px black);
 }
 
-/* ===== COLLAPSIBLE CONTENT ===== */
+/* ===== COLLAPSIBLE CONTENT (original viewer) ===== */
 .faction-content {
     display: none;
     margin-top: 15px;
 }
 
-/* ===== GRID OF ALL IMAGES ===== */
+/* ===== IMAGE GRID ===== */
 .big-image-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 25px;
 }
 
-/* ===== INDIVIDUAL IMAGE BOX ===== */
+/* ===== IMAGE BOX ===== */
 .image-box {
     background: rgba(0,0,0,0.45);
     border: 1px solid rgba(255,255,255,0.2);
@@ -84,7 +86,7 @@ h1 {
     box-shadow: 0 0 10px black;
 }
 
-/* ===== CAPTIONS ===== */
+/* ===== IMAGE LABEL ===== */
 .caption {
     margin-top: 8px;
     font-size: 15px;
@@ -93,12 +95,29 @@ h1 {
     text-shadow: 0 0 6px black;
 }
 
-/* Draft details container (NOT full-size faction box) */
+/* ============================================================
+   DRAFT MODE BLOCKS (lighter background so stars show through)
+   ============================================================ */
+
+/* Draft entries shown AFTER clicking "Draft" */
+.draft-entry {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+/* Header styling reused inside draft entries */
+.draft-entry .faction-header {
+    padding-bottom: 0;
+}
+
+/* Details shown under a draft pick (expanded images) */
 .draft-details {
-    background: rgba(0,0,0,0.45);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255,255,255,0.20);
     padding: 15px;
     border-radius: 10px;
     margin-top: 15px;
 }
-

@@ -1,11 +1,11 @@
 // =====================================================
-//  LOAD FACTIONS
+// LOAD ALL FACTIONS (do not render anything at startup)
 // =====================================================
 
 let allFactions = {};
 
 function prox(p) {
-    return p;
+    return p; // no proxying needed
 }
 
 fetch("factions.json")
@@ -15,7 +15,7 @@ fetch("factions.json")
 
 
 // =====================================================
-//  RENDER A SINGLE FACTION DETAILS (images grid)
+// RENDER A FACTION'S DETAILS (images grid)
 // =====================================================
 
 function renderFactionDetails(name) {
@@ -23,25 +23,23 @@ function renderFactionDetails(name) {
     if (!data) return null;
 
     const wrapper = document.createElement("div");
-    wrapper.className = "draft-details"; // FIX: not .faction
+    wrapper.className = "draft-details"; // NOT .faction
 
     const grid = document.createElement("div");
     grid.className = "big-image-grid";
 
     const mapping = {
-        "home_system": "Home System",
-        "agent": "Agent",
-        "commander": "Commander",
-        "hero": "Hero",
-        "mech": "Mech",
-        "faction_tech_1": "Faction Tech I",
-        "faction_tech_2": "Faction Tech II",
-        "breakthrough": "Breakthrough",
-        "promissory": "Promissory",
-        "flagship_front": "Flagship (Front)",
-        "flagship_back": "Flagship (Back)",
-        "faction_sheet_front": "Faction Sheet (Front)",
-        "faction_sheet_back": "Faction Sheet (Back)"
+        home_system: "Home System",
+        agent: "Agent",
+        commander: "Commander",
+        hero: "Hero",
+        mech: "Mech",
+        faction_tech_1: "Faction Tech I",
+        faction_tech_2: "Faction Tech II",
+        breakthrough: "Breakthrough",
+        promissory: "Promissory",
+        faction_sheet_front: "Faction Sheet (Front)",
+        faction_sheet_back: "Faction Sheet (Back)"
     };
 
     Object.entries(mapping).forEach(([key, label]) => {
@@ -53,12 +51,12 @@ function renderFactionDetails(name) {
         const img = document.createElement("img");
         img.src = prox(data[key]);
 
-        const cap = document.createElement("div");
-        cap.className = "caption";
-        cap.textContent = label;
+        const caption = document.createElement("div");
+        caption.className = "caption";
+        caption.textContent = label;
 
         box.appendChild(img);
-        box.appendChild(cap);
+        box.appendChild(caption);
         grid.appendChild(box);
     });
 
@@ -68,7 +66,7 @@ function renderFactionDetails(name) {
 
 
 // =====================================================
-//  DRAFTING SYSTEM
+// DRAFT SYSTEM
 // =====================================================
 
 function pickRandomFactions(n) {
@@ -84,11 +82,11 @@ function renderDraftResult(list) {
     results.innerHTML = "";
 
     list.forEach(name => {
+        // Draft entry — NOT the .faction class
         const entry = document.createElement("div");
-        entry.className = "faction";  // header-style only
-        entry.style.cursor = "pointer";
+        entry.className = "draft-entry";
 
-        // CLICKABLE HEADER
+        // Clickable header
         const header = document.createElement("div");
         header.className = "faction-header";
 
@@ -105,7 +103,7 @@ function renderDraftResult(list) {
 
         let expanded = null;
 
-        // TOGGLE DETAILS
+        // Toggle expand/collapse
         header.addEventListener("click", () => {
             if (expanded) {
                 expanded.remove();
@@ -123,7 +121,7 @@ function renderDraftResult(list) {
 
 
 // =====================================================
-//  BUTTON LISTENER
+// DRAFT BUTTON
 // =====================================================
 
 document.getElementById("draft-button").addEventListener("click", () => {
