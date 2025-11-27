@@ -1,8 +1,9 @@
-const PROXY = "http://127.0.0.1:5005/img?url=";
-const JSON_FILE = "factions_remote.json";
+// Load the correct JSON file
+const JSON_FILE = "factions.json";
 
+// No proxy needed since all images are inside the repo
 function prox(url) {
-    return PROXY + encodeURIComponent(url);
+    return url;
 }
 
 fetch(JSON_FILE)
@@ -50,7 +51,9 @@ fetch(JSON_FILE)
                 "breakthrough": "Breakthrough",
                 "promissory": "Promissory",
                 "flagship_front": "Flagship (Front)",
-                "flagship_back": "Flagship (Back)"
+                "flagship_back": "Flagship (Back)",
+                "faction_sheet_front": "Faction Sheet (Front)",
+                "faction_sheet_back": "Faction Sheet (Back)"
             };
 
             Object.entries(mapping).forEach(([key, label]) => {
@@ -85,4 +88,7 @@ fetch(JSON_FILE)
             factionBox.appendChild(content);
             container.appendChild(factionBox);
         });
+    })
+    .catch(err => {
+        console.error("Error loading factions.json:", err);
     });
