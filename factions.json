@@ -87,8 +87,8 @@
   "The Vuil'Raith Cabal": {
     "symbol": "images/thevuilraithcabal/symbol.jpg",
     "home_system": "images/thevuilraithcabal/home_system.jpg",
-    "commander": "images/thevuilraithcabal/commander.jpg",
     "agent": "images/thevuilraithcabal/agent.jpg",
+    "commander": "images/thevuilraithcabal/commander.jpg",
     "hero": "images/thevuilraithcabal/hero.jpg",
     "mech": "images/thevuilraithcabal/mech.jpg",
     "faction_tech_1": "images/thevuilraithcabal/faction_tech_1.jpg",
