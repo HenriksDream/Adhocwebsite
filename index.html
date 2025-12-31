@@ -1,23 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <title>Crossword</title>
+  <title>Korsord</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main id="app">
-    <h1>Crossword</h1>
+    <h1>Korsord</h1>
 
-    <section class="crossword" aria-label="Crossword grid">
-      <div id="grid" class="grid" role="grid" aria-label="Crossword cells"></div>
+    <section class="layout">
+      <div class="board">
+        <div id="grid" class="grid" role="grid" aria-label="Korsord"></div>
 
-      <div class="controls">
-        <button id="clearBtn" type="button">Clear</button>
+        <div class="controls">
+          <button id="clearBtn" type="button">Rensa</button>
+          <div id="mode" class="mode" aria-live="polite"></div>
+        </div>
+
+        <p class="hint">
+          Klicka en ledtråd eller en ruta. Skriv bokstäver. Backspace raderar och går bakåt.
+          Om en ruta hör till både vågrätt och lodrätt: tryck på samma ruta igen för att byta riktning.
+        </p>
       </div>
 
-      <p class="hint">Tap/click a white square and type. Backspace/Delete clears.</p>
+      <aside class="clues" aria-label="Ledtrådar">
+        <h2>Ledtrådar</h2>
+        <ol id="clueList" class="clue-list"></ol>
+      </aside>
     </section>
   </main>
 

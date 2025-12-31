@@ -11,6 +11,9 @@
   --cellBlackBorder: rgba(255, 255, 255, 0.08);
 
   --numColor: rgba(0, 0, 0, 0.70);
+
+  --hl: rgba(255, 255, 255, 0.25);
+  --hlStrong: rgba(255, 255, 255, 0.55);
 }
 
 html, body {
@@ -29,25 +32,38 @@ body {
 }
 
 #app {
-  width: min(94vw, 620px);
-  padding: 24px 16px;
-  text-align: center;
+  width: min(96vw, 980px);
+  padding: 22px 14px;
 }
 
 h1 {
-  margin: 0 0 16px;
-  font-size: clamp(1.4rem, 3.6vw, 2rem);
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
 }
 
-.crossword {
+.layout {
   display: grid;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.board {
+  display: grid;
   justify-items: center;
+  gap: 12px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(9, 1fr); /* 9 columns */
+  grid-template-columns: repeat(9, 1fr);
   gap: 2px;
   padding: 10px;
   border: 1px solid var(--gridBorder);
@@ -58,22 +74,19 @@ h1 {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Shared sizing for both types */
 .cell {
-  width: clamp(28px, 8.6vw, 44px);
+  width: clamp(28px, 7.8vw, 44px);
   aspect-ratio: 1 / 1;
   box-sizing: border-box;
   border-radius: 2px;
 }
 
-/* Wrapper so we can overlay the clue number */
 .cell-wrap {
   position: relative;
   display: grid;
   place-items: center;
 }
 
-/* White playable cell (input) */
 .cell-input {
   width: 100%;
   height: 100%;
@@ -81,13 +94,12 @@ h1 {
   background: var(--cellWhite);
   color: var(--cellText);
   text-align: center;
-  font-size: clamp(1rem, 4vw, 1.25rem);
+  font-size: clamp(1rem, 3.8vw, 1.25rem);
   font-weight: 700;
   outline: none;
   padding: 0;
   margin: 0;
 
-  /* Mobile friendliness */
   -webkit-appearance: none;
   appearance: none;
   caret-color: transparent;
@@ -95,16 +107,14 @@ h1 {
 }
 
 .cell-input:focus-visible {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 3px var(--hlStrong);
 }
 
-/* Black blocked cell */
 .cell-block {
   background: var(--cellBlack);
   border: 1px solid var(--cellBlackBorder);
 }
 
-/* Clue number in top-left */
 .clue-num {
   position: absolute;
   top: 2px;
@@ -113,13 +123,21 @@ h1 {
   line-height: 1;
   font-weight: 700;
   color: var(--numColor);
-  pointer-events: none; /* never block tapping/typing */
+  pointer-events: none;
 }
 
-/* Controls */
+/* Word highlighting */
+.hl .cell-input {
+  box-shadow: inset 0 0 0 2px var(--hl);
+}
+
+.active .cell-input {
+  box-shadow: inset 0 0 0 3px var(--hlStrong);
+}
+
 .controls {
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 
@@ -137,8 +155,75 @@ button:active {
   transform: translateY(1px);
 }
 
+.mode {
+  font-weight: 700;
+  opacity: 0.95;
+  text-align: left;
+}
+
 .hint {
   margin: 0;
   opacity: 0.9;
   font-size: 0.95rem;
+  text-align: center;
+  max-width: 60ch;
+}
+
+/* Clues panel */
+.clues {
+  border: 1px solid var(--gridBorder);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 14px;
+}
+
+.clues h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+}
+
+.clue-list {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.clue-item {
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+.clue-item:hover {
+  border-color: rgba(255,255,255,0.22);
+}
+
+.clue-item.selected {
+  border-color: rgba(255,255,255,0.45);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.clue-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.clue-no {
+  font-weight: 900;
+}
+
+.clue-dir {
+  font-weight: 700;
+  opacity: 0.9;
+  font-size: 0.92rem;
+}
+
+.clue-text {
+  margin-top: 6px;
+  line-height: 1.35;
+  opacity: 0.95;
 }
