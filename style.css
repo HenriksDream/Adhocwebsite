@@ -2,12 +2,12 @@
   --bg: #070A10;
   --text: #ffffff;
 
-  --board: rgba(255,255,255,0.06);
+  --board: rgba(20, 24, 32, 0.82);
   --boardBorder: rgba(255,255,255,0.16);
 
   --white: #ffffff;
   --whiteText: #111111;
-  --whiteBorder: rgba(0,0,0,0.24);
+  --whiteBorder: rgba(0,0,0,0.25);
 
   --black: #050505;
   --blackBorder: rgba(255,255,255,0.14);
@@ -21,70 +21,98 @@
   --num: rgba(0,0,0,0.78);
 }
 
-html, body { width:100%; height:100%; margin:0; }
-
-body{
-  background: radial-gradient(1200px 700px at 50% 10%, rgba(255,255,255,0.06), transparent 55%),
-              var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
 }
 
+/* ==== BACKGROUND ==== */
+body{
+  background:
+    radial-gradient(
+      rgba(0,0,0,0.65),
+      rgba(0,0,0,0.88)
+    ),
+    url("background.png") center / cover no-repeat fixed;
+
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Improve mobile scrolling performance */
+@media (max-width: 768px){
+  body{
+    background-attachment: scroll;
+  }
+}
+
+/* ==== APP LAYOUT ==== */
 #app{
   width: min(98vw, 980px);
   padding: 16px 12px 24px;
 }
 
 h1{
-  margin: 8px 0 14px;
-  text-align:center;
-  font-size: clamp(1.4rem, 4vw, 2rem);
+  margin: 10px 0 16px;
+  text-align: center;
+  font-size: clamp(1.6rem, 4.2vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: 0.03em;
 }
 
+/* ==== MAIN LAYOUT ==== */
 .layout{
-  display:grid;
+  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-  align-items:start;
-}
-@media (max-width: 900px){
-  .layout{ grid-template-columns: 1fr; }
+  align-items: start;
 }
 
+@media (max-width: 900px){
+  .layout{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==== BOARD ==== */
 .board{
-  display:grid;
+  display: grid;
   gap: 12px;
-  justify-items:center;
+  justify-items: center;
 }
 
 .grid-wrap{
-  width:100%;
-  display:flex;
-  justify-content:center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .grid{
-  display:grid;
-  grid-template-columns: repeat(8, 1fr); /* IMPORTANT: 8 columns */
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
   gap: 4px;
   padding: 12px;
-  border-radius: 14px;
+
+  border-radius: 16px;
   background: var(--board);
   border: 1px solid var(--boardBorder);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-  box-sizing:border-box;
+  box-shadow: 0 14px 32px rgba(0,0,0,0.45);
 
-  /* phone-first sizing */
+  box-sizing: border-box;
   width: min(96vw, 520px);
-  user-select:none;
+
+  user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ==== CELLS ==== */
 .cell{
-  width: clamp(38px, 11.2vw, 58px); /* bigger on phones */
+  width: clamp(40px, 11.5vw, 60px);
   aspect-ratio: 1 / 1;
   border-radius: 6px;
   box-sizing: border-box;
@@ -95,136 +123,178 @@ h1{
   background: var(--white);
   border: 2px solid var(--whiteBorder);
 }
+
 .cell.black{
   background: var(--black);
   border: 2px solid var(--blackBorder);
 }
 
+/* Input fills the cell but has no border */
 .cell input{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  border:none;
-  outline:none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
   background: transparent;
+
   color: var(--whiteText);
-  text-align:center;
+  text-align: center;
   font-weight: 900;
 
-  /* 16px+ prevents iOS zoom */
-  font-size: 18px;
+  font-size: 18px; /* prevents iOS zoom */
+  text-transform: uppercase;
 
-  -webkit-appearance:none;
-  appearance:none;
+  -webkit-appearance: none;
+  appearance: none;
 }
+
 @media (min-width: 520px){
-  .cell input{ font-size: 20px; }
+  .cell input{
+    font-size: 22px;
+  }
 }
 
+/* ==== CLUE NUMBER ==== */
 .clue-num{
-  position:absolute;
+  position: absolute;
   top: 4px;
   left: 5px;
   font-size: 12px;
   line-height: 1;
   font-weight: 900;
   color: var(--num);
-  pointer-events:none;
+  pointer-events: none;
 }
 
-.cell.hl{ box-shadow: inset 0 0 0 4px var(--hl); }
-.cell.active{ box-shadow: inset 0 0 0 5px var(--hlStrong); }
+/* ==== HIGHLIGHTING ==== */
+.cell.hl{
+  box-shadow: inset 0 0 0 4px var(--hl);
+}
 
-.cell.correct{ box-shadow: inset 0 0 0 5px var(--ok); }
-.cell.incorrect{ box-shadow: inset 0 0 0 5px var(--bad); }
+.cell.active{
+  box-shadow: inset 0 0 0 5px var(--hlStrong);
+}
 
+/* ==== CHECK RESULTS ==== */
+.cell.correct{
+  box-shadow: inset 0 0 0 5px var(--ok);
+}
+
+.cell.incorrect{
+  box-shadow: inset 0 0 0 5px var(--bad);
+}
+
+/* ==== CONTROLS ==== */
 .controls{
   width: min(96vw, 520px);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
 .controls button{
-  border:none;
-  background: rgba(255,255,255,0.94);
+  border: none;
+  background: rgba(255,255,255,0.95);
   color: #0a2a66;
-  padding: 11px 14px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+
   font-weight: 900;
-  cursor:pointer;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
-.controls button:active{ transform: translateY(1px); }
+.controls button:active{
+  transform: translateY(1px);
+}
 
 .mode{
   font-weight: 900;
   opacity: 0.95;
-  text-align:right;
-  flex:1;
+  text-align: right;
+  flex: 1;
 }
 
+/* ==== HINT TEXT ==== */
 .hint{
   width: min(96vw, 520px);
-  margin:0;
-  opacity:0.88;
-  font-size:0.95rem;
-  text-align:center;
-  line-height:1.35;
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.4;
 }
 
-/* clues */
+/* ==== CLUES PANEL ==== */
 .clues{
   border: 1px solid var(--boardBorder);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--board);
   padding: 14px;
 }
 
-.clues h2{ margin:0 0 10px; font-size:1.1rem; }
+.clues h2{
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
 
 .clue-columns{
-  display:grid;
+  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
 @media (max-width: 900px){
-  .clue-columns{ grid-template-columns: 1fr; }
+  .clue-columns{
+    grid-template-columns: 1fr;
+  }
 }
 
 .clues h3{
-  margin: 8px 0 8px;
+  margin: 6px 0 8px;
   font-size: 1rem;
   text-transform: lowercase;
   opacity: 0.95;
 }
 
+/* ==== CLUE ITEMS ==== */
 .clue-list{
-  margin:0;
+  margin: 0;
   padding-left: 22px;
-  display:grid;
-  gap:10px;
+  display: grid;
+  gap: 10px;
 }
 
 .clue-item{
-  background: rgba(0,0,0,0.18);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
   padding: 10px;
-  cursor:pointer;
+
+  cursor: pointer;
 }
 
 .clue-item.selected{
   border-color: rgba(255,255,255,0.45);
-  background: rgba(0,0,0,0.28);
+  background: rgba(0,0,0,0.35);
 }
 
 .clue-head{
-  display:flex;
-  gap:8px;
-  align-items:baseline;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
 }
-.clue-no{ font-weight: 900; }
-.clue-text{ margin-top:6px; line-height:1.35; opacity: 0.95; }
+
+.clue-no{
+  font-weight: 900;
+}
+
+.clue-text{
+  margin-top: 6px;
+  line-height: 1.35;
+  opacity: 0.95;
+}
