@@ -19,12 +19,15 @@
   --bad: rgba(240, 70, 90, 0.95);
 
   --num: rgba(0,0,0,0.78);
+
+  /* 🔑 ONE fixed size for everything — prevents offset */
+  --cellSize: clamp(40px, 11.5vw, 60px);
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+html, body{
+  width:100%;
+  height:100%;
+  margin:0;
 }
 
 /* ==== BACKGROUND ==== */
@@ -39,19 +42,19 @@ body{
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
 
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
 }
 
-/* Improve mobile scrolling performance */
+/* Better performance on mobile */
 @media (max-width: 768px){
   body{
     background-attachment: scroll;
   }
 }
 
-/* ==== APP LAYOUT ==== */
+/* ==== APP ==== */
 #app{
   width: min(98vw, 980px);
   padding: 16px 12px 24px;
@@ -81,20 +84,23 @@ h1{
 
 /* ==== BOARD ==== */
 .board{
-  display: grid;
+  display:grid;
   gap: 12px;
-  justify-items: center;
+  justify-items:center;
 }
 
 .grid-wrap{
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  width:100%;
+  display:flex;
+  justify-content:center;
 }
 
+/* 🔑 FIXED GRID — NO FRACTIONAL PIXELS */
 .grid{
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  display:grid;
+  grid-template-columns: repeat(8, var(--cellSize));
+  grid-auto-rows: var(--cellSize);
+
   gap: 4px;
   padding: 12px;
 
@@ -103,17 +109,19 @@ h1{
   border: 1px solid var(--boardBorder);
   box-shadow: 0 14px 32px rgba(0,0,0,0.45);
 
-  box-sizing: border-box;
+  box-sizing:border-box;
   width: min(96vw, 520px);
 
-  user-select: none;
+  justify-content: center;
+
+  user-select:none;
   -webkit-tap-highlight-color: transparent;
 }
 
 /* ==== CELLS ==== */
 .cell{
-  width: clamp(40px, 11.5vw, 60px);
-  aspect-ratio: 1 / 1;
+  width: var(--cellSize);
+  height: var(--cellSize);
   border-radius: 6px;
   box-sizing: border-box;
   position: relative;
@@ -129,43 +137,43 @@ h1{
   border: 2px solid var(--blackBorder);
 }
 
-/* Input fills the cell but has no border */
+/* Input fills the cell but does NOT affect sizing */
 .cell input{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:none;
+  outline:none;
   background: transparent;
 
   color: var(--whiteText);
-  text-align: center;
-  font-weight: 900;
+  text-align:center;
+  font-weight:900;
 
-  font-size: 18px; /* prevents iOS zoom */
-  text-transform: uppercase;
+  font-size:18px; /* prevents iOS zoom */
+  text-transform:uppercase;
 
-  -webkit-appearance: none;
-  appearance: none;
+  -webkit-appearance:none;
+  appearance:none;
 }
 
 @media (min-width: 520px){
   .cell input{
-    font-size: 22px;
+    font-size:22px;
   }
 }
 
-/* ==== CLUE NUMBER ==== */
+/* ==== CLUE NUMBERS ==== */
 .clue-num{
-  position: absolute;
+  position:absolute;
   top: 4px;
   left: 5px;
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 900;
+  font-size:12px;
+  line-height:1;
+  font-weight:900;
   color: var(--num);
-  pointer-events: none;
+  pointer-events:none;
 }
 
 /* ==== HIGHLIGHTING ==== */
@@ -189,22 +197,22 @@ h1{
 /* ==== CONTROLS ==== */
 .controls{
   width: min(96vw, 520px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   gap: 10px;
 }
 
 .controls button{
-  border: none;
+  border:none;
   background: rgba(255,255,255,0.95);
   color: #0a2a66;
   padding: 12px 16px;
   border-radius: 14px;
 
-  font-weight: 900;
-  font-size: 1rem;
-  cursor: pointer;
+  font-weight:900;
+  font-size:1rem;
+  cursor:pointer;
 }
 
 .controls button:active{
@@ -212,23 +220,23 @@ h1{
 }
 
 .mode{
-  font-weight: 900;
-  opacity: 0.95;
-  text-align: right;
-  flex: 1;
+  font-weight:900;
+  opacity:0.95;
+  text-align:right;
+  flex:1;
 }
 
-/* ==== HINT TEXT ==== */
+/* ==== HINT ==== */
 .hint{
   width: min(96vw, 520px);
-  margin: 0;
-  opacity: 0.9;
-  font-size: 0.95rem;
-  text-align: center;
-  line-height: 1.4;
+  margin:0;
+  opacity:0.9;
+  font-size:0.95rem;
+  text-align:center;
+  line-height:1.4;
 }
 
-/* ==== CLUES PANEL ==== */
+/* ==== CLUES ==== */
 .clues{
   border: 1px solid var(--boardBorder);
   border-radius: 16px;
@@ -237,15 +245,15 @@ h1{
 }
 
 .clues h2{
-  margin: 0 0 12px;
-  font-size: 1.15rem;
-  font-weight: 900;
+  margin:0 0 12px;
+  font-size:1.15rem;
+  font-weight:900;
 }
 
 .clue-columns{
-  display: grid;
+  display:grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap:12px;
 }
 
 @media (max-width: 900px){
@@ -255,18 +263,18 @@ h1{
 }
 
 .clues h3{
-  margin: 6px 0 8px;
-  font-size: 1rem;
+  margin:6px 0 8px;
+  font-size:1rem;
   text-transform: lowercase;
-  opacity: 0.95;
+  opacity:0.95;
 }
 
 /* ==== CLUE ITEMS ==== */
 .clue-list{
-  margin: 0;
-  padding-left: 22px;
-  display: grid;
-  gap: 10px;
+  margin:0;
+  padding-left:22px;
+  display:grid;
+  gap:10px;
 }
 
 .clue-item{
@@ -274,8 +282,7 @@ h1{
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 14px;
   padding: 10px;
-
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .clue-item.selected{
@@ -284,17 +291,17 @@ h1{
 }
 
 .clue-head{
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
+  display:flex;
+  gap:8px;
+  align-items:baseline;
 }
 
 .clue-no{
-  font-weight: 900;
+  font-weight:900;
 }
 
 .clue-text{
-  margin-top: 6px;
-  line-height: 1.35;
-  opacity: 0.95;
+  margin-top:6px;
+  line-height:1.35;
+  opacity:0.95;
 }
