@@ -1,19 +1,28 @@
-:root {
-  --bg: #0b0f18;
+:root{
+  --bg: #070A10;
   --text: #ffffff;
-  --gridBorder: rgba(255, 255, 255, 0.15);
 
-  --cellWhite: #ffffff;
-  --cellText: #111111;
-  --cellBorder: rgba(0, 0, 0, 0.20);
+  /* board */
+  --board: rgba(255,255,255,0.06);
+  --boardBorder: rgba(255,255,255,0.14);
 
-  --cellBlack: #000000;
-  --cellBlackBorder: rgba(255, 255, 255, 0.08);
+  /* cells */
+  --white: #ffffff;
+  --whiteText: #111111;
+  --whiteBorder: rgba(0,0,0,0.22);
 
-  --numColor: rgba(0, 0, 0, 0.70);
+  --black: #050505;                 /* darker + clearer than transparent */
+  --blackBorder: rgba(255,255,255,0.12);
 
-  --hl: rgba(255, 255, 255, 0.25);
-  --hlStrong: rgba(255, 255, 255, 0.55);
+  /* highlight */
+  --hl: rgba(255,255,255,0.25);
+  --hlStrong: rgba(255,255,255,0.60);
+
+  /* check results */
+  --ok: rgba(50, 220, 130, 0.95);
+  --bad: rgba(240, 70, 90, 0.95);
+
+  --num: rgba(0,0,0,0.75);
 }
 
 html, body {
@@ -22,80 +31,96 @@ html, body {
   margin: 0;
 }
 
-body {
-  background: var(--bg);
+body{
+  background: radial-gradient(1200px 700px at 50% 10%, rgba(255,255,255,0.06), transparent 55%),
+              var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: var(--text);
+  align-items: flex-start;
 }
 
-#app {
-  width: min(96vw, 980px);
-  padding: 22px 14px;
+#app{
+  width: min(98vw, 980px);
+  padding: 16px 12px 24px;
 }
 
-h1 {
-  margin: 0 0 14px;
+h1{
+  margin: 8px 0 14px;
   text-align: center;
-  font-size: clamp(1.4rem, 3.2vw, 2rem);
+  font-size: clamp(1.4rem, 4vw, 2rem);
 }
 
-.layout {
+.layout{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 14px;
   align-items: start;
 }
 
-@media (max-width: 880px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 900px){
+  .layout{ grid-template-columns: 1fr; }
 }
 
-.board {
+/* Board area */
+.board{
   display: grid;
-  justify-items: center;
   gap: 12px;
+  justify-items: center;
 }
 
-.grid {
+/* Make sure grid is big + visible on phones */
+.grid-wrap{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.grid{
   display: grid;
   grid-template-columns: repeat(9, 1fr);
-  gap: 2px;
-  padding: 10px;
-  border: 1px solid var(--gridBorder);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+  gap: 3px; /* thicker gaps = more visible */
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--board);
+  border: 1px solid var(--boardBorder);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
   box-sizing: border-box;
+
+  /* keep it phone-friendly */
+  width: min(96vw, 520px);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.cell {
-  width: clamp(28px, 7.8vw, 44px);
+.cell{
+  /* Bigger by default; still fits 9 columns on small phones */
+  width: clamp(34px, 10vw, 54px);
   aspect-ratio: 1 / 1;
   box-sizing: border-box;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
-.cell-wrap {
+.cell-wrap{
   position: relative;
   display: grid;
   place-items: center;
 }
 
-.cell-input {
+/* White playable cell (input) */
+.cell-input{
   width: 100%;
   height: 100%;
-  border: 1px solid var(--cellBorder);
-  background: var(--cellWhite);
-  color: var(--cellText);
+  border: 2px solid var(--whiteBorder);
+  background: var(--white);
+  color: var(--whiteText);
   text-align: center;
-  font-size: clamp(1rem, 3.8vw, 1.25rem);
-  font-weight: 700;
+  font-weight: 800;
+
+  /* IMPORTANT for phones: 16px+ prevents iOS zoom */
+  font-size: 18px;
+
   outline: none;
   padding: 0;
   margin: 0;
@@ -103,127 +128,130 @@ h1 {
   -webkit-appearance: none;
   appearance: none;
   caret-color: transparent;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
-.cell-input:focus-visible {
-  box-shadow: 0 0 0 3px var(--hlStrong);
+@media (min-width: 520px){
+  .cell-input{ font-size: 20px; }
 }
 
-.cell-block {
-  background: var(--cellBlack);
-  border: 1px solid var(--cellBlackBorder);
+.cell-input:focus-visible{
+  box-shadow: 0 0 0 4px var(--hlStrong);
 }
 
-.clue-num {
+/* Black blocked cell */
+.cell-block{
+  background: var(--black);
+  border: 2px solid var(--blackBorder);
+}
+
+.clue-num{
   position: absolute;
-  top: 2px;
-  left: 3px;
-  font-size: 0.72rem;
+  top: 3px;
+  left: 4px;
+  font-size: 12px;
   line-height: 1;
-  font-weight: 700;
-  color: var(--numColor);
+  font-weight: 900;
+  color: var(--num);
   pointer-events: none;
 }
 
-/* Word highlighting */
-.hl .cell-input {
-  box-shadow: inset 0 0 0 2px var(--hl);
+/* Word highlight */
+.hl .cell-input{
+  box-shadow: inset 0 0 0 3px var(--hl);
 }
 
-.active .cell-input {
-  box-shadow: inset 0 0 0 3px var(--hlStrong);
+.active .cell-input{
+  box-shadow: inset 0 0 0 4px var(--hlStrong);
 }
 
-.controls {
+/* Check feedback */
+.correct .cell-input{
+  box-shadow: inset 0 0 0 4px var(--ok);
+}
+
+.incorrect .cell-input{
+  box-shadow: inset 0 0 0 4px var(--bad);
+}
+
+/* Controls */
+.controls{
+  width: min(96vw, 520px);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
-button {
+.controls button{
   border: none;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255,255,255,0.94);
   color: #0a2a66;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: 700;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-weight: 800;
   cursor: pointer;
 }
 
-button:active {
+.controls button:active{
   transform: translateY(1px);
 }
 
-.mode {
-  font-weight: 700;
+.mode{
+  font-weight: 800;
   opacity: 0.95;
-  text-align: left;
+  text-align: right;
+  flex: 1;
 }
 
-.hint {
+.hint{
+  width: min(96vw, 520px);
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.88;
   font-size: 0.95rem;
   text-align: center;
-  max-width: 60ch;
+  line-height: 1.35;
 }
 
 /* Clues panel */
-.clues {
-  border: 1px solid var(--gridBorder);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+.clues{
+  border: 1px solid var(--boardBorder);
+  border-radius: 14px;
+  background: var(--board);
   padding: 14px;
 }
 
-.clues h2 {
+.clues h2{
   margin: 0 0 10px;
   font-size: 1.1rem;
 }
 
-.clue-list {
+.clue-list{
   margin: 0;
   padding-left: 22px;
   display: grid;
   gap: 10px;
 }
 
-.clue-item {
-  background: rgba(0, 0, 0, 0.18);
+.clue-item{
+  background: rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 10px;
-  padding: 10px 10px;
+  border-radius: 12px;
+  padding: 10px;
   cursor: pointer;
 }
 
-.clue-item:hover {
-  border-color: rgba(255,255,255,0.22);
-}
-
-.clue-item.selected {
+.clue-item.selected{
   border-color: rgba(255,255,255,0.45);
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0,0,0,0.28);
 }
 
-.clue-head {
+.clue-head{
   display: flex;
   gap: 8px;
   align-items: baseline;
 }
 
-.clue-no {
-  font-weight: 900;
-}
-
-.clue-dir {
-  font-weight: 700;
-  opacity: 0.9;
-  font-size: 0.92rem;
-}
-
-.clue-text {
-  margin-top: 6px;
-  line-height: 1.35;
-  opacity: 0.95;
-}
+.clue-no{ font-weight: 900; }
+.clue-dir{ font-weight: 800; opacity: 0.9; font-size: 0.92rem; }
+.clue-text{ margin-top: 6px; line-height: 1.35; opacity: 0.95; }

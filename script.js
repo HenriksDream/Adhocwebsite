@@ -26,79 +26,51 @@
     "10,1": 7
   };
 
-  // Clues + where each word starts + direction.
-  // Directions:
-  //   "down" = lodrätt
-  //   "across" = vågrätt
-  //
-  // NOTE: Word lengths are inferred from the layout automatically.
+  // Clues + positions
   const CLUES = [
-    {
-      number: 1,
-      dir: "down",
-      start: [0, 6],
-      text: "Världens första rymdflygning med bara kvinnor skedde 2025. Katy Perry var en av resenärerna, vad tog hon med sig upp i rymden?"
-    },
-    {
-      number: 2,
-      dir: "across",
-      start: [2, 0],
-      text: "Från vilken stad kommer nya påven Leo XIV?"
-    },
-    {
-      number: 3,
-      dir: "down",
-      start: [4, 3],
-      text: "Taylor Swift kallade sin blivande make för gympalärare när hon postade om deras förlovning. Vilket ämne kallade hon sig själv lärare i?"
-    },
-    {
-      number: 4,
-      dir: "across",
-      start: [5, 2],
-      text: "Vilket land vann fotbolls EM på damsidan 2025?"
-    },
-    {
-      number: 5,
-      dir: "across",
-      start: [7, 0],
-      text: "Vilket land vann Eurovision 2025?"
-    },
-    {
-      number: 6,
-      dir: "down",
-      start: [8, 7],
-      text: "Vilken grupp vann Melodifestivalen?"
-    },
-    {
-      number: 7,
-      dir: "across",
-      start: [10, 1],
-      text: "Donald trump bannlyste detta i 12 timmar"
-    },
+    { number: 1, dir: "down",   start: [0, 6], text: "Världens första rymdflygning med bara kvinnor skedde 2025. Katy Perry var en av resenärerna, vad tog hon med sig upp i rymden?" },
+    { number: 2, dir: "across", start: [2, 0], text: "Från vilken stad kommer nya påven Leo XIV?" },
+    { number: 3, dir: "down",   start: [4, 3], text: "Taylor Swift kallade sin blivande make för gympalärare när hon postade om deras förlovning. Vilket ämne kallade hon sig själv lärare i?" },
+    { number: 4, dir: "across", start: [5, 2], text: "Vilket land vann fotbolls EM på damsidan 2025?" },
+    { number: 5, dir: "across", start: [7, 0], text: "Vilket land vann Eurovision 2025?" },
+    { number: 6, dir: "down",   start: [8, 7], text: "Vilken grupp vann Melodifestivalen?" },
+    { number: 7, dir: "across", start: [10,1], text: "Donald trump bannlyste detta i 12 timmar" },
   ];
+
+  // ✅ Correct answers from your screenshot (uppercase)
+  // IMPORTANT: Keep them exactly as the grid expects.
+  const ANSWERS = {
+    1: "BLOMMA",
+    2: "CHICAGO",
+    3: "ENGELSKA",
+    4: "ENGLAND",
+    5: "ÖSTERRIKE",
+    6: "KAJ",
+    7: "TIKTOK",
+  };
 
   const gridEl = document.getElementById("grid");
   const clueListEl = document.getElementById("clueList");
   const clearBtn = document.getElementById("clearBtn");
+  const checkBtn = document.getElementById("checkBtn");
   const modeEl = document.getElementById("mode");
 
   const rows = LAYOUT.length;
   const cols = LAYOUT[0].length;
 
-  // Maps "r,c" -> { wrapEl, inputEl }
-  const cellMap = new Map();
+  const cellMap = new Map();        // "r,c" -> { wrapEl, inputEl }
+  const clueCells = new Map();      // number -> array of "r,c"
+  const clueByNumDir = new Map();   // "num|dir" -> clue
 
-  // For each clue, store computed cell positions: [[r,c],...]
-  const clueCells = new Map(); // number -> array of "r,c" keys
-  const clueByNumberDir = new Map(); // "num|dir" -> clue object
-
-  // Selection state
-  let selectedClue = null; // clue object
-  let selectedDir = null;  // "across" | "down"
+  let selectedClue = null;
+  let selectedDir = null;
   let activeCellKey = null;
 
   function keyOf(r, c) { return `${r},${c}`; }
-  function isWhite(r, c) { return r >= 0 && r < rows && c >= 0 && c < cols && LAYOUT[r][c] === 1; }
+  function isWhite(r, c) {
+    return r >= 0 && r < rows && c >= 0 && c < cols && LAYOUT[r][c] === 1;
+  }
+  function dirLabel(dir) { return dir === "across" ? "Vågrätt" : "Lodrätt"; }
 
   function addClueNumberIfAny(wrapper, r, c) {
     const key = keyOf(r, c);
@@ -114,6 +86,16 @@
     d.className = "cell cell-wrap cell-block";
     d.setAttribute("aria-hidden", "true");
     return d;
+  }
+
+  function normalizeChar(ch) {
+    return (ch || "").toUpperCase().replace(/[^A-ZÅÄÖ]/g, "");
+  }
+
+  function clearPerCellMarks() {
+    for (const { wrapEl } of cellMap.values()) {
+      wrapEl.classList.remove("correct", "incorrect");
+    }
   }
 
   function makeInputCell(r, c) {
@@ -133,20 +115,19 @@
     inp.dataset.row = String(r);
     inp.dataset.col = String(c);
 
-    // Click/tap selects word for that cell
     inp.addEventListener("pointerdown", (e) => {
-      // Prevent scroll-jank on mobile while still focusing
       e.preventDefault();
       handleCellPick(r, c);
       inp.focus({ preventScroll: true });
     });
 
-    // Keep only one uppercase letter; allow ÅÄÖ too.
     inp.addEventListener("input", () => {
-      const v = (inp.value || "").toUpperCase();
-      inp.value = v.slice(-1).replace(/[^A-ZÅÄÖ]/g, "");
+      // typing clears previous check marks so you can re-check
+      clearPerCellMarks();
 
-      // auto-advance within selected word if possible
+      const v = normalizeChar(inp.value);
+      inp.value = v.slice(-1);
+
       if (!selectedClue) return;
       const seq = clueCells.get(selectedClue.number) || [];
       const here = keyOf(r, c);
@@ -157,9 +138,9 @@
       }
     });
 
-    // Backspace/Delete handling within selected word
     inp.addEventListener("keydown", (e) => {
       if (e.key === "Delete") {
+        clearPerCellMarks();
         inp.value = "";
         e.preventDefault();
         return;
@@ -167,14 +148,17 @@
 
       if (e.key === "Backspace") {
         if (inp.value) {
+          clearPerCellMarks();
           inp.value = "";
           e.preventDefault();
           return;
         }
+
         if (!selectedClue) {
           e.preventDefault();
           return;
         }
+
         const seq = clueCells.get(selectedClue.number) || [];
         const here = keyOf(r, c);
         const idx = seq.indexOf(here);
@@ -184,12 +168,11 @@
         return;
       }
 
-      // Optional: arrow keys move within selected word
+      // Arrow keys within selected word
       if (selectedClue) {
         const seq = clueCells.get(selectedClue.number) || [];
         const here = keyOf(r, c);
         const idx = seq.indexOf(here);
-
         if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
           const prevKey = seq[idx - 1];
           if (prevKey) focusKey(prevKey);
@@ -238,16 +221,12 @@
 
   function buildClueMaps() {
     clueCells.clear();
-    clueByNumberDir.clear();
+    clueByNumDir.clear();
 
     for (const clue of CLUES) {
-      clueByNumberDir.set(`${clue.number}|${clue.dir}`, clue);
+      clueByNumDir.set(`${clue.number}|${clue.dir}`, clue);
       clueCells.set(clue.number, computeCellsForClue(clue));
     }
-  }
-
-  function dirLabel(dir) {
-    return dir === "across" ? "Vågrätt" : "Lodrätt";
   }
 
   function renderClues() {
@@ -280,18 +259,8 @@
       li.appendChild(head);
       li.appendChild(text);
 
-      li.addEventListener("click", () => {
-        selectClue(clue);
-      });
-
+      li.addEventListener("click", () => selectClue(clue, true));
       clueListEl.appendChild(li);
-    }
-  }
-
-  function clearHighlights() {
-    for (const { wrapEl } of cellMap.values()) {
-      wrapEl.classList.remove("hl");
-      wrapEl.classList.remove("active");
     }
   }
 
@@ -305,21 +274,18 @@
     });
   }
 
+  function clearHighlights() {
+    for (const { wrapEl } of cellMap.values()) {
+      wrapEl.classList.remove("hl", "active");
+    }
+  }
+
   function setModeText() {
     if (!selectedClue) {
       modeEl.textContent = "";
       return;
     }
     modeEl.textContent = `Vald: ${selectedClue.number} (${dirLabel(selectedClue.dir)})`;
-  }
-
-  function focusKey(cellKey) {
-    const info = cellMap.get(cellKey);
-    if (!info) return;
-    info.inputEl.focus({ preventScroll: true });
-    info.inputEl.setSelectionRange?.(0, 1);
-    activeCellKey = cellKey;
-    applyHighlights();
   }
 
   function applyHighlights() {
@@ -337,40 +303,48 @@
     }
   }
 
-  function selectClue(clue) {
+  function focusKey(cellKey) {
+    const info = cellMap.get(cellKey);
+    if (!info) return;
+    info.inputEl.focus({ preventScroll: true });
+    info.inputEl.setSelectionRange?.(0, 1);
+    activeCellKey = cellKey;
+    applyHighlights();
+  }
+
+  function selectClue(clue, focusStart) {
     selectedClue = clue;
     selectedDir = clue.dir;
-    activeCellKey = clueCells.get(clue.number)?.[0] || null;
+
+    const seq = clueCells.get(clue.number) || [];
+    if (!activeCellKey || !seq.includes(activeCellKey)) {
+      activeCellKey = seq[0] || null;
+    }
 
     updateClueSelectionUI();
     setModeText();
     applyHighlights();
 
-    if (activeCellKey) focusKey(activeCellKey);
+    if (focusStart && activeCellKey) focusKey(activeCellKey);
   }
 
-  function cluesForCell(r, c) {
-    const k = keyOf(r, c);
+  function cluesForCellKey(k) {
     const matches = [];
     for (const clue of CLUES) {
       const seq = clueCells.get(clue.number) || [];
       if (seq.includes(k)) matches.push(clue);
     }
-    return matches; // could be 0,1,2
+    return matches;
   }
 
   function handleCellPick(r, c) {
     const k = keyOf(r, c);
-    const matches = cluesForCell(r, c);
-
+    const matches = cluesForCellKey(k);
     if (matches.length === 0) return;
 
-    // If exactly one word uses this cell: select it
     if (matches.length === 1) {
-      const clue = matches[0];
-      // keep active at this cell
-      selectedClue = clue;
-      selectedDir = clue.dir;
+      selectedClue = matches[0];
+      selectedDir = selectedClue.dir;
       activeCellKey = k;
       updateClueSelectionUI();
       setModeText();
@@ -378,7 +352,6 @@
       return;
     }
 
-    // If two words (across+down): decide by current selection; allow toggle by re-tapping same cell
     const across = matches.find(m => m.dir === "across");
     const down = matches.find(m => m.dir === "down");
 
@@ -386,21 +359,14 @@
     const alreadySelected = selectedClue && matches.some(m => m.number === selectedClue.number && m.dir === selectedClue.dir);
 
     let next = null;
-
     if (alreadyHere && alreadySelected) {
-      // toggle direction
-      if (selectedDir === "across") next = down || across;
-      else next = across || down;
+      next = (selectedDir === "across") ? (down || across) : (across || down);
     } else {
-      // prefer current direction if set, otherwise across
-      if (selectedDir === "down") next = down || across;
-      else next = across || down;
+      next = (selectedDir === "down") ? (down || across) : (across || down);
     }
 
-    if (!next) next = across || down;
-
-    selectedClue = next;
-    selectedDir = next.dir;
+    selectedClue = next || across || down;
+    selectedDir = selectedClue.dir;
     activeCellKey = k;
 
     updateClueSelectionUI();
@@ -408,8 +374,78 @@
     applyHighlights();
   }
 
+  function allFilled() {
+    for (const { inputEl } of cellMap.values()) {
+      if (!normalizeChar(inputEl.value)) return false;
+    }
+    return true;
+  }
+
+  function buildExpectedMap() {
+    // cellKey -> expected char
+    const expected = new Map();
+
+    for (const clue of CLUES) {
+      const ans = (ANSWERS[clue.number] || "").toUpperCase();
+      const seq = clueCells.get(clue.number) || [];
+
+      if (!ans || ans.length !== seq.length) {
+        // If this ever happens, your layout and answer length mismatch.
+        // We'll still map what we can.
+      }
+
+      for (let i = 0; i < seq.length; i++) {
+        const k = seq[i];
+        const ch = ans[i] || "";
+        if (!ch) continue;
+
+        const prev = expected.get(k);
+        if (prev && prev !== ch) {
+          // In a valid crossword, overlaps must match.
+          // We'll keep the first, but this indicates a mismatch in data.
+        } else {
+          expected.set(k, ch);
+        }
+      }
+    }
+
+    return expected;
+  }
+
+  function checkAnswers() {
+    clearPerCellMarks();
+
+    if (!allFilled()) {
+      alert("Fyll i hela korsordet för att rätta");
+      return;
+    }
+
+    const expected = buildExpectedMap();
+    let wrong = 0;
+
+    for (const [k, { wrapEl, inputEl }] of cellMap.entries()) {
+      const got = normalizeChar(inputEl.value);
+      const exp = expected.get(k);
+
+      if (!exp) continue;
+
+      if (got === exp) {
+        wrapEl.classList.add("correct");
+      } else {
+        wrapEl.classList.add("incorrect");
+        wrong++;
+      }
+    }
+
+    if (wrong === 0) alert("Allt rätt!");
+    else alert(`${wrong} fel.`);
+  }
+
   clearBtn.addEventListener("click", () => {
-    for (const { inputEl } of cellMap.values()) inputEl.value = "";
+    for (const { inputEl, wrapEl } of cellMap.values()) {
+      inputEl.value = "";
+      wrapEl.classList.remove("correct", "incorrect");
+    }
     selectedClue = null;
     selectedDir = null;
     activeCellKey = null;
@@ -417,6 +453,8 @@
     updateClueSelectionUI();
     setModeText();
   });
+
+  checkBtn.addEventListener("click", checkAnswers);
 
   // Init
   buildGrid();

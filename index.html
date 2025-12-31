@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Korsord</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,10 +12,13 @@
 
     <section class="layout">
       <div class="board">
-        <div id="grid" class="grid" role="grid" aria-label="Korsord"></div>
+        <div id="gridWrap" class="grid-wrap">
+          <div id="grid" class="grid" role="grid" aria-label="Korsord"></div>
+        </div>
 
         <div class="controls">
           <button id="clearBtn" type="button">Rensa</button>
+          <button id="checkBtn" type="button">Rätta</button>
           <div id="mode" class="mode" aria-live="polite"></div>
         </div>
 
