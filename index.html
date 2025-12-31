@@ -2,61 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mini Crossword</title>
+  <title>Crossword</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <main id="app">
-    <h1>Mini Crossword</h1>
+    <h1>Crossword</h1>
 
-    <section class="crossword" aria-label="Mini crossword grid">
-      <!-- 5x5 grid; only the cross cells are enabled -->
-      <div id="grid" class="grid" role="grid" aria-label="Crossword grid">
-        <!-- Row 1 -->
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="1" data-col="3" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-
-        <!-- Row 2 -->
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="2" data-col="3" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-
-        <!-- Row 3 (horizontal 5 letters; overlap at col 3) -->
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="3" data-col="1" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="3" data-col="2" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="3" data-col="3" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="3" data-col="4" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="3" data-col="5" />
-
-        <!-- Row 4 -->
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="4" data-col="3" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-
-        <!-- Row 5 -->
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell cell--active" maxlength="1" inputmode="text" autocomplete="off" data-row="5" data-col="3" />
-        <input class="cell block" disabled aria-hidden="true" />
-        <input class="cell block" disabled aria-hidden="true" />
-      </div>
+    <section class="crossword" aria-label="Crossword grid">
+      <div id="grid" class="grid" role="grid" aria-label="Crossword cells"></div>
 
       <div class="controls">
         <button id="clearBtn" type="button">Clear</button>
       </div>
 
-      <p class="hint">
-        Type letters in the boxes. Backspace/delete clears. Tap boxes on phone.
-      </p>
+      <p class="hint">Tap/click a white square and type. Backspace/Delete clears.</p>
     </section>
   </main>
 

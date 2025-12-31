@@ -1,10 +1,14 @@
 :root {
-  --bg: #007BFF;
+  --bg: #0b0f18;
   --text: #ffffff;
-  --cell: #ffffff;
+  --gridBorder: rgba(255, 255, 255, 0.15);
+
+  --cellWhite: #ffffff;
   --cellText: #111111;
-  --border: rgba(255, 255, 255, 0.55);
-  --shadow: rgba(0, 0, 0, 0.15);
+  --cellBorder: rgba(0, 0, 0, 0.20);
+
+  --cellBlack: #000000;
+  --cellBlackBorder: rgba(255, 255, 255, 0.08);
 }
 
 html, body {
@@ -23,15 +27,14 @@ body {
 }
 
 #app {
-  width: min(92vw, 520px);
-  padding: 24px 18px;
+  width: min(94vw, 620px);
+  padding: 24px 16px;
   text-align: center;
 }
 
 h1 {
-  margin: 0 0 18px;
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  color: var(--text);
+  margin: 0 0 16px;
+  font-size: clamp(1.4rem, 3.6vw, 2rem);
 }
 
 .crossword {
@@ -42,49 +45,58 @@ h1 {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 10px 25px var(--shadow);
-  background: rgba(255, 255, 255, 0.10);
+  grid-template-columns: repeat(9, 1fr); /* 9 columns */
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--gridBorder);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* Shared sizing for both types */
 .cell {
-  width: clamp(44px, 10vw, 64px);
+  width: clamp(28px, 8.6vw, 44px);
   aspect-ratio: 1 / 1;
-  border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--text);
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+/* White playable cell (input) */
+.cell-input {
+  border: 1px solid var(--cellBorder);
+  background: var(--cellWhite);
+  color: var(--cellText);
   text-align: center;
-  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-size: clamp(1rem, 4vw, 1.25rem);
   font-weight: 700;
   outline: none;
-  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+
+  /* Mobile friendliness */
   -webkit-appearance: none;
   appearance: none;
-  caret-color: transparent; /* feels more "grid-like" */
+  caret-color: transparent;
 }
 
-.cell--active {
-  background: var(--cell);
-  color: var(--cellText);
-  border-color: rgba(0, 0, 0, 0.15);
+.cell-input:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.45);
 }
 
-.cell:focus-visible {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.55);
+/* Black blocked cell */
+.cell-block {
+  background: var(--cellBlack);
+  border: 1px solid var(--cellBlackBorder);
 }
 
-.block {
-  visibility: hidden; /* keeps spacing but makes it look like no cell */
-}
-
+/* Controls */
 .controls {
   display: flex;
   justify-content: center;
+  gap: 10px;
 }
 
 button {
