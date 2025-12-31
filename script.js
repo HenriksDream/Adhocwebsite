@@ -1,51 +1,74 @@
 (function () {
+  // EXACT layout from your posted crossword image:
+  // 14 rows x 8 cols. 1 = white/playable, 0 = black.
   const LAYOUT = [
-    [0,0,0,0,0,0,1,0,0],
-    [0,0,0,0,0,0,1,0,0],
-    [1,1,1,1,1,1,1,0,0],
-    [0,0,0,0,0,0,1,0,0],
-    [0,0,0,1,0,0,1,0,0],
-    [0,0,1,1,1,1,1,1,1],
-    [0,0,0,1,0,0,0,0,0],
-    [1,1,1,1,1,1,1,1,1],
-    [0,0,0,1,0,0,0,1,0],
-    [0,0,0,1,0,0,0,1,0],
-    [0,1,1,1,1,1,1,0,0],
-    [0,0,0,1,0,0,0,0,0],
+    [0,0,1,0,0,0,0,1],
+    [0,0,1,0,0,0,0,1],
+    [0,0,1,0,0,0,0,1],
+    [0,0,1,0,0,0,0,1],
+    [0,0,1,0,0,1,0,1],
+    [1,1,1,1,1,1,1,1],
+    [1,0,1,0,0,1,0,0],
+    [1,0,0,1,1,1,0,0],
+    [1,0,1,0,0,1,0,0],
+    [1,0,1,0,0,1,0,1],
+    [1,0,1,0,1,1,1,1],
+    [1,0,1,0,0,1,0,1],
+    [0,1,1,1,1,1,1,0],
+    [0,0,1,0,0,0,0,0],
   ];
 
+  // Number positions in the grid (row,col) -> number
   const CLUE_NUMBERS = {
-    "0,6": 1,
-    "2,0": 2,
-    "4,3": 3,
-    "5,2": 4,
-    "7,0": 5,
-    "8,7": 6,
-    "10,1": 7
+    "0,2": 1,
+    "0,7": 2,
+    "4,5": 3,
+    "5,0": 4,
+    "7,3": 5,
+    "8,2": 6,
+    "9,7": 7,
+    "10,4": 8,
+    "12,1": 9
   };
 
+  // Clues (your updated list for THIS crossword)
   const CLUES = [
-    { number: 1, dir: "down",   start: [0, 6], text: "Världens första rymdflygning med bara kvinnor skedde 2025. Katy Perry var en av resenärerna, vad tog hon med sig upp i rymden?" },
-    { number: 2, dir: "across", start: [2, 0], text: "Från vilken stad kommer nya påven Leo XIV?" },
-    { number: 3, dir: "down",   start: [4, 3], text: "Taylor Swift kallade sin blivande make för gympalärare när hon postade om deras förlovning. Vilket ämne kallade hon sig själv lärare i?" },
-    { number: 4, dir: "across", start: [5, 2], text: "Vilket land vann fotbolls EM på damsidan 2025?" },
-    { number: 5, dir: "across", start: [7, 0], text: "Vilket land vann Eurovision 2025?" },
-    { number: 6, dir: "down",   start: [8, 7], text: "Vilken grupp vann Melodifestivalen?" },
-    { number: 7, dir: "across", start: [10,1], text: "Donald trump bannlyste detta i 12 timmar" },
+    // across (vågrätt)
+    { number: 4, dir: "across", start: [5,0], text: "Taylor Swift kallade sin blivande make för gympalärare när hon postade om deras förlovning. Vilket ämne kallade hon sig själv lärare i?" },
+    { number: 5, dir: "across", start: [7,3], text: "Hur många partiledare har avgått under året?" },
+    { number: 8, dir: "across", start: [10,4], text: "Nobel nobbade Trump för fredspriset, men han fick det av en annan organisation. Vilken?" },
+    { number: 9, dir: "across", start: [12,1], text: "Sveriges nya förbundskapen för herrlandslaget delar efternamn med en känd trollkarl. Vad heter han ?" },
+
+    // down (neråt)
+    { number: 1, dir: "down", start: [0,2], text: "Från vilken stad kommer nya påven Leo XIV?" },
+    { number: 2, dir: "down", start: [0,7], text: "Världens första rymdflygning med bara kvinnor skedde 2025. Katy Perry var en av resenärerna, vad tog hon med sig upp i rymden?" },
+    { number: 3, dir: "down", start: [4,5], text: "Vilket land vann Eurovision 2025?" },
+    { number: 4, dir: "down", start: [5,0], text: "Vilket land vann fotbolls EM på damsidan 2025?" },
+    { number: 6, dir: "down", start: [8,2], text: "Donald trump bannlyste detta i 12 timmar" },
+    { number: 7, dir: "down", start: [9,7], text: "Vilken grupp vann Melodifestivalen?" },
   ];
 
+  // Correct answers for Rätta (from the filled solution image)
+  // NOTE: #2 is BLOMMA (6) to match the grid.
   const ANSWERS = {
-    1: "BLOMM",
-    2: "CHICAGO",
-    3: "ENGELSKA",
-    4: "ENGLAND",
-    5: "ÖSTERRIKE",
-    6: "AJ",
-    7: "TIKTOK",
+    // across
+    "across|4": "ENGELSKA",
+    "across|5": "TRE",
+    "across|8": "FIFA",
+    "across|9": "POTTER",
+
+    // down
+    "down|1": "CHICAGO",
+    "down|2": "BLOMMA",
+    "down|3": "ÖSTERRIKE",
+    "down|4": "ENGLAND",
+    "down|6": "TIKTOK",
+    "down|7": "KAJ",
   };
 
   const gridEl = document.getElementById("grid");
-  const clueListEl = document.getElementById("clueList");
+  const cluesAcrossEl = document.getElementById("cluesAcross");
+  const cluesDownEl = document.getElementById("cluesDown");
   const clearBtn = document.getElementById("clearBtn");
   const checkBtn = document.getElementById("checkBtn");
   const modeEl = document.getElementById("mode");
@@ -55,57 +78,49 @@
 
   // "r,c" -> { cellEl, inputEl|null }
   const cellMap = new Map();
+  // key "dir|number" -> array of "r,c"
+  const wordCells = new Map();
 
-  // number -> array of "r,c"
-  const clueCells = new Map();
-
-  let selectedClue = null;
-  let selectedDir = null;
+  let selectedWord = null; // {dir, number}
   let activeKey = null;
 
   const keyOf = (r,c) => `${r},${c}`;
   const isWhite = (r,c) => r>=0 && r<rows && c>=0 && c<cols && LAYOUT[r][c] === 1;
-  const dirLabel = (d) => d === "across" ? "Vågrätt" : "Lodrätt";
+  const normalizeChar = (ch) => (ch || "").toUpperCase().replace(/[^A-ZÅÄÖ]/g, "");
+  const wordKey = (dir, num) => `${dir}|${num}`;
 
-  function normalizeChar(ch) {
-    return (ch || "").toUpperCase().replace(/[^A-ZÅÄÖ]/g, "");
-  }
-
-  function computeCellsForClue(clue) {
-    const [sr, sc] = clue.start;
-    const dr = clue.dir === "down" ? 1 : 0;
-    const dc = clue.dir === "across" ? 1 : 0;
+  function computeCells(start, dir) {
+    const [sr, sc] = start;
+    const dr = dir === "down" ? 1 : 0;
+    const dc = dir === "across" ? 1 : 0;
 
     const keys = [];
     let r = sr, c = sc;
-    while (isWhite(r, c)) {
+    while (isWhite(r,c)) {
       keys.push(keyOf(r,c));
       r += dr; c += dc;
     }
     return keys;
   }
 
-  function buildClueCells() {
-    clueCells.clear();
+  function buildWordCells() {
+    wordCells.clear();
     for (const clue of CLUES) {
-      clueCells.set(clue.number, computeCellsForClue(clue));
+      wordCells.set(wordKey(clue.dir, clue.number), computeCells(clue.start, clue.dir));
     }
   }
 
-  function clearAllCellClasses() {
-    for (const { cellEl } of cellMap.values()) {
-      cellEl.classList.remove("hl", "active", "correct", "incorrect");
-    }
-  }
-
-  function applyHighlights() {
-    // keep correct/incorrect, clear only hl/active
+  function clearHL() {
     for (const { cellEl } of cellMap.values()) {
       cellEl.classList.remove("hl", "active");
     }
-    if (!selectedClue) return;
+  }
 
-    const seq = clueCells.get(selectedClue.number) || [];
+  function applyHL() {
+    clearHL();
+    if (!selectedWord) return;
+
+    const seq = wordCells.get(wordKey(selectedWord.dir, selectedWord.number)) || [];
     for (const k of seq) {
       const info = cellMap.get(k);
       if (info) info.cellEl.classList.add("hl");
@@ -116,18 +131,11 @@
     }
   }
 
-  function updateMode() {
-    if (!selectedClue) modeEl.textContent = "";
-    else modeEl.textContent = `Vald: ${selectedClue.number} (${dirLabel(selectedClue.dir)})`;
-  }
-
-  function updateClueUI() {
-    const items = clueListEl.querySelectorAll(".clue-item");
-    items.forEach(el => {
-      const n = Number(el.dataset.number);
-      const d = el.dataset.dir;
-      el.classList.toggle("selected", !!selectedClue && selectedClue.number === n && selectedClue.dir === d);
-    });
+  function setMode() {
+    if (!selectedWord) modeEl.textContent = "";
+    else {
+      modeEl.textContent = `Vald: ${selectedWord.number} (${selectedWord.dir === "across" ? "vågrätt" : "neråt"})`;
+    }
   }
 
   function focusKey(k) {
@@ -136,165 +144,69 @@
     info.inputEl.focus({ preventScroll: true });
     info.inputEl.setSelectionRange?.(0,1);
     activeKey = k;
-    applyHighlights();
+    applyHL();
   }
 
-  function selectClue(clue, focusStart = true) {
-    selectedClue = clue;
-    selectedDir = clue.dir;
+  function selectWord(dir, number, focusStart = true, preferKey = null) {
+    selectedWord = { dir, number };
+    const seq = wordCells.get(wordKey(dir, number)) || [];
+    if (preferKey && seq.includes(preferKey)) activeKey = preferKey;
+    else if (!activeKey || !seq.includes(activeKey)) activeKey = seq[0] || null;
 
-    const seq = clueCells.get(clue.number) || [];
-    if (!activeKey || !seq.includes(activeKey)) activeKey = seq[0] || null;
-
-    updateClueUI();
-    updateMode();
-    applyHighlights();
+    updateClueSelectionUI();
+    setMode();
+    applyHL();
     if (focusStart && activeKey) focusKey(activeKey);
   }
 
-  function cluesForCellKey(k) {
+  function wordsForCell(k) {
     const matches = [];
     for (const clue of CLUES) {
-      const seq = clueCells.get(clue.number) || [];
-      if (seq.includes(k)) matches.push(clue);
+      const seq = wordCells.get(wordKey(clue.dir, clue.number)) || [];
+      if (seq.includes(k)) matches.push({ dir: clue.dir, number: clue.number });
     }
     return matches;
   }
 
   function handleCellTap(k) {
-    const matches = cluesForCellKey(k);
+    const matches = wordsForCell(k);
     if (matches.length === 0) return;
 
     if (matches.length === 1) {
-      selectedClue = matches[0];
-      selectedDir = selectedClue.dir;
-      activeKey = k;
-      updateClueUI(); updateMode(); applyHighlights();
-      focusKey(k);
+      selectWord(matches[0].dir, matches[0].number, false, k);
       return;
     }
 
+    // If both across + down: tap same cell again toggles direction
+    const alreadySameCell = (activeKey === k);
+    const alreadyOnThisCell = selectedWord && matches.some(m => m.dir === selectedWord.dir && m.number === selectedWord.number);
+
+    let next = null;
     const across = matches.find(m => m.dir === "across");
     const down = matches.find(m => m.dir === "down");
 
-    const alreadySameCell = (activeKey === k);
-    const alreadyInThese = selectedClue && matches.some(m => m.number === selectedClue.number && m.dir === selectedClue.dir);
-
-    let next;
-    if (alreadySameCell && alreadyInThese) {
-      // toggle direction
-      next = (selectedDir === "across") ? (down || across) : (across || down);
+    if (alreadySameCell && alreadyOnThisCell) {
+      next = (selectedWord.dir === "across") ? down : across;
     } else {
-      // keep current dir if possible, else across
-      next = (selectedDir === "down") ? (down || across) : (across || down);
+      next = (selectedWord?.dir === "down") ? down : across;
     }
+    next = next || across || down;
 
-    selectedClue = next || across || down;
-    selectedDir = selectedClue.dir;
-    activeKey = k;
-
-    updateClueUI(); updateMode(); applyHighlights();
-    focusKey(k);
-  }
-
-  function buildExpectedMap() {
-    const expected = new Map(); // cellKey -> char
-
-    for (const clue of CLUES) {
-      const ans = (ANSWERS[clue.number] || "").toUpperCase();
-      const seq = clueCells.get(clue.number) || [];
-      for (let i = 0; i < seq.length; i++) {
-        const k = seq[i];
-        const ch = ans[i] || "";
-        if (!ch) continue;
-        if (!expected.has(k)) expected.set(k, ch);
-      }
-    }
-    return expected;
-  }
-
-  function allFilled() {
-    for (const { inputEl } of cellMap.values()) {
-      if (!inputEl) continue;
-      if (!normalizeChar(inputEl.value)) return false;
-    }
-    return true;
-  }
-
-  function checkAnswers() {
-    // clear previous correctness marks
-    for (const { cellEl } of cellMap.values()) {
-      cellEl.classList.remove("correct", "incorrect");
-    }
-
-    if (!allFilled()) {
-      alert("Fyll i hela korsordet för att rätta");
-      return;
-    }
-
-    const expected = buildExpectedMap();
-    let wrong = 0;
-
-    for (const [k, { cellEl, inputEl }] of cellMap.entries()) {
-      if (!inputEl) continue;
-      const got = normalizeChar(inputEl.value);
-      const exp = expected.get(k);
-      if (!exp) continue;
-
-      if (got === exp) cellEl.classList.add("correct");
-      else { cellEl.classList.add("incorrect"); wrong++; }
-    }
-
-    alert(wrong === 0 ? "Allt rätt!" : `${wrong} fel.`);
-  }
-
-  function renderClues() {
-    clueListEl.innerHTML = "";
-    for (const clue of CLUES) {
-      const li = document.createElement("li");
-      li.className = "clue-item";
-      li.dataset.number = String(clue.number);
-      li.dataset.dir = clue.dir;
-
-      const head = document.createElement("div");
-      head.className = "clue-head";
-
-      const no = document.createElement("div");
-      no.className = "clue-no";
-      no.textContent = `${clue.number}.`;
-
-      const dir = document.createElement("div");
-      dir.className = "clue-dir";
-      dir.textContent = dirLabel(clue.dir);
-
-      head.appendChild(no);
-      head.appendChild(dir);
-
-      const text = document.createElement("div");
-      text.className = "clue-text";
-      text.textContent = clue.text;
-
-      li.appendChild(head);
-      li.appendChild(text);
-
-      li.addEventListener("click", () => selectClue(clue, true));
-      clueListEl.appendChild(li);
-    }
+    selectWord(next.dir, next.number, false, k);
   }
 
   function buildGrid() {
     gridEl.innerHTML = "";
     cellMap.clear();
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
+    for (let r=0; r<rows; r++) {
+      for (let c=0; c<cols; c++) {
         const k = keyOf(r,c);
-
         const cell = document.createElement("div");
         cell.className = "cell " + (LAYOUT[r][c] === 1 ? "white" : "black");
 
         if (LAYOUT[r][c] === 1) {
-          // clue number if any
+          // number
           if (k in CLUE_NUMBERS) {
             const s = document.createElement("span");
             s.className = "clue-num";
@@ -310,18 +222,14 @@
           inp.inputMode = "text";
           inp.setAttribute("enterkeyhint", "next");
 
-          // On focus (normal phone behavior), select the word for that cell
-          inp.addEventListener("focus", () => {
-            handleCellTap(k);
-          });
+          // focus selects word for that cell (good phone behavior)
+          inp.addEventListener("focus", () => handleCellTap(k));
 
-          // Tap the cell wrapper also focuses the input (bigger target on phone)
-          cell.addEventListener("click", () => {
-            inp.focus();
-          });
+          // tapping the square focuses input (bigger target)
+          cell.addEventListener("click", () => inp.focus());
 
           inp.addEventListener("input", () => {
-            // any typing should clear correctness marks so re-check works naturally
+            // clear check marks on any edit
             for (const { cellEl } of cellMap.values()) {
               cellEl.classList.remove("correct", "incorrect");
             }
@@ -329,8 +237,8 @@
             const v = normalizeChar(inp.value);
             inp.value = v.slice(-1);
 
-            if (!selectedClue) return;
-            const seq = clueCells.get(selectedClue.number) || [];
+            if (!selectedWord) return;
+            const seq = wordCells.get(wordKey(selectedWord.dir, selectedWord.number)) || [];
             const idx = seq.indexOf(k);
             if (idx >= 0 && inp.value) {
               const nextKey = seq[idx + 1];
@@ -344,28 +252,24 @@
               e.preventDefault();
               return;
             }
-
             if (e.key === "Backspace") {
               if (inp.value) {
                 inp.value = "";
                 e.preventDefault();
                 return;
               }
-              if (!selectedClue) { e.preventDefault(); return; }
-
-              const seq = clueCells.get(selectedClue.number) || [];
+              if (!selectedWord) { e.preventDefault(); return; }
+              const seq = wordCells.get(wordKey(selectedWord.dir, selectedWord.number)) || [];
               const idx = seq.indexOf(k);
               const prevKey = seq[idx - 1];
               if (prevKey) focusKey(prevKey);
               e.preventDefault();
-              return;
             }
           });
 
           cell.appendChild(inp);
           cellMap.set(k, { cellEl: cell, inputEl: inp });
         } else {
-          // black cell
           cellMap.set(k, { cellEl: cell, inputEl: null });
         }
 
@@ -374,23 +278,122 @@
     }
   }
 
+  function renderClues() {
+    cluesAcrossEl.innerHTML = "";
+    cluesDownEl.innerHTML = "";
+
+    const across = CLUES.filter(c => c.dir === "across").sort((a,b)=>a.number-b.number);
+    const down = CLUES.filter(c => c.dir === "down").sort((a,b)=>a.number-b.number);
+
+    const makeItem = (clue) => {
+      const li = document.createElement("li");
+      li.className = "clue-item";
+      li.dataset.dir = clue.dir;
+      li.dataset.number = String(clue.number);
+
+      const head = document.createElement("div");
+      head.className = "clue-head";
+
+      const no = document.createElement("div");
+      no.className = "clue-no";
+      no.textContent = `${clue.number}.`;
+
+      head.appendChild(no);
+
+      const text = document.createElement("div");
+      text.className = "clue-text";
+      text.textContent = clue.text;
+
+      li.appendChild(head);
+      li.appendChild(text);
+
+      li.addEventListener("click", () => selectWord(clue.dir, clue.number, true));
+      return li;
+    };
+
+    across.forEach(c => cluesAcrossEl.appendChild(makeItem(c)));
+    down.forEach(c => cluesDownEl.appendChild(makeItem(c)));
+  }
+
+  function updateClueSelectionUI() {
+    const all = document.querySelectorAll(".clue-item");
+    all.forEach(el => {
+      const dir = el.dataset.dir;
+      const num = Number(el.dataset.number);
+      const sel = selectedWord && selectedWord.dir === dir && selectedWord.number === num;
+      el.classList.toggle("selected", !!sel);
+    });
+  }
+
+  function allFilled() {
+    for (const { inputEl } of cellMap.values()) {
+      if (!inputEl) continue;
+      if (!normalizeChar(inputEl.value)) return false;
+    }
+    return true;
+  }
+
+  function expectedCharMap() {
+    // cellKey -> expected letter, derived from all ANSWERS
+    const exp = new Map();
+
+    for (const clue of CLUES) {
+      const ans = (ANSWERS[wordKey(clue.dir, clue.number)] || "").toUpperCase();
+      const seq = wordCells.get(wordKey(clue.dir, clue.number)) || [];
+      for (let i=0; i<seq.length; i++) {
+        const k = seq[i];
+        const ch = ans[i] || "";
+        if (!ch) continue;
+        if (!exp.has(k)) exp.set(k, ch);
+      }
+    }
+    return exp;
+  }
+
+  function checkAnswers() {
+    // clear previous
+    for (const { cellEl } of cellMap.values()) {
+      cellEl.classList.remove("correct", "incorrect");
+    }
+
+    if (!allFilled()) {
+      alert("Fyll i hela korsordet för att rätta");
+      return;
+    }
+
+    const exp = expectedCharMap();
+    let wrong = 0;
+
+    for (const [k, { cellEl, inputEl }] of cellMap.entries()) {
+      if (!inputEl) continue;
+      const got = normalizeChar(inputEl.value);
+      const want = exp.get(k);
+      if (!want) continue;
+
+      if (got === want) cellEl.classList.add("correct");
+      else { cellEl.classList.add("incorrect"); wrong++; }
+    }
+
+    alert(wrong === 0 ? "Allt rätt!" : `${wrong} fel.`);
+  }
+
   clearBtn.addEventListener("click", () => {
     for (const { cellEl, inputEl } of cellMap.values()) {
-      cellEl.classList.remove("hl", "active", "correct", "incorrect");
+      cellEl.classList.remove("hl","active","correct","incorrect");
       if (inputEl) inputEl.value = "";
     }
-    selectedClue = null;
-    selectedDir = null;
+    selectedWord = null;
     activeKey = null;
-    updateClueUI();
-    updateMode();
+    updateClueSelectionUI();
+    setMode();
+    clearHL();
   });
 
   checkBtn.addEventListener("click", checkAnswers);
 
-  // Init
-  buildClueCells();
+  // init
+  buildWordCells();
   renderClues();
   buildGrid();
-  updateMode();
+  setMode();
 })();

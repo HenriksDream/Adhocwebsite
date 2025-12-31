@@ -12,7 +12,7 @@
 
     <section class="layout">
       <div class="board">
-        <div id="gridWrap" class="grid-wrap">
+        <div class="grid-wrap">
           <div id="grid" class="grid" role="grid" aria-label="Korsord"></div>
         </div>
 
@@ -23,14 +23,25 @@
         </div>
 
         <p class="hint">
-          Klicka en ledtråd eller en ruta. Skriv bokstäver. Backspace raderar och går bakåt.
-          Om en ruta hör till både vågrätt och lodrätt: tryck på samma ruta igen för att byta riktning.
+          Tryck en ruta eller en ledtråd. Skriv bokstäver. Backspace raderar och går bakåt.
+          Om en ruta hör till både vågrätt & neråt: tryck på samma ruta igen för att byta riktning.
         </p>
       </div>
 
       <aside class="clues" aria-label="Ledtrådar">
         <h2>Ledtrådar</h2>
-        <ol id="clueList" class="clue-list"></ol>
+
+        <div class="clue-columns">
+          <div>
+            <h3>vågrätt</h3>
+            <ol id="cluesAcross" class="clue-list"></ol>
+          </div>
+
+          <div>
+            <h3>neråt</h3>
+            <ol id="cluesDown" class="clue-list"></ol>
+          </div>
+        </div>
       </aside>
     </section>
   </main>
