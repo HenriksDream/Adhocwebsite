@@ -84,6 +84,9 @@
   let selectedWord = null; // {dir, number}
   let activeKey = null;
 
+  // ✅ NEW: suppress one focus-driven pick (prevents 4-down/4-across swapping)
+  let suppressFocusPickKey = null;
+
   const keyOf = (r,c) => `${r},${c}`;
   const isWhite = (r,c) => r>=0 && r<rows && c>=0 && c<cols && LAYOUT[r][c] === 1;
   const normalizeChar = (ch) => (ch || "").toUpperCase().replace(/[^A-ZÅÄÖ]/g, "");
@@ -141,6 +144,10 @@
   function focusKey(k) {
     const info = cellMap.get(k);
     if (!info || !info.inputEl) return;
+
+    // ✅ NEW: block the very next focus handler from flipping the word
+    suppressFocusPickKey = k;
+
     info.inputEl.focus({ preventScroll: true });
     info.inputEl.setSelectionRange?.(0,1);
     activeKey = k;
@@ -150,12 +157,14 @@
   function selectWord(dir, number, focusStart = true, preferKey = null) {
     selectedWord = { dir, number };
     const seq = wordCells.get(wordKey(dir, number)) || [];
+
     if (preferKey && seq.includes(preferKey)) activeKey = preferKey;
     else if (!activeKey || !seq.includes(activeKey)) activeKey = seq[0] || null;
 
     updateClueSelectionUI();
     setMode();
     applyHL();
+
     if (focusStart && activeKey) focusKey(activeKey);
   }
 
@@ -223,7 +232,14 @@
           inp.setAttribute("enterkeyhint", "next");
 
           // focus selects word for that cell (good phone behavior)
-          inp.addEventListener("focus", () => handleCellTap(k));
+          inp.addEventListener("focus", () => {
+            // ✅ NEW: if focus was caused by our own programmatic focusKey(), skip once
+            if (suppressFocusPickKey === k) {
+              suppressFocusPickKey = null;
+              return;
+            }
+            handleCellTap(k);
+          });
 
           // tapping the square focuses input (bigger target)
           cell.addEventListener("click", () => inp.focus());
